@@ -5,6 +5,7 @@
     "allowJs": true,
     "skipLibCheck": true,
     "esModuleInterop": true,
+    "ignoreDeprecations": "6.0", // By Gemini Code Assist
     "noImplicitAny": true,
     "sourceMap": true,
     "baseUrl": ".",

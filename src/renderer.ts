@@ -41,5 +41,5 @@ form.addEventListener("submit", (event) => {
 
   console.log({ usersAndOrgs, pat, ignoredRepos });
 
-  window.config.save();
+  window.api.saveConfig();
 });
