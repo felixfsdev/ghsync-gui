@@ -40,4 +40,6 @@ form.addEventListener("submit", (event) => {
   const ignoredRepos = formData.get("ignoredRepos") as string;
 
   console.log({ usersAndOrgs, pat, ignoredRepos });
+
+  window.config.save();
 });
