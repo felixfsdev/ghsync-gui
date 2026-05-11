@@ -3,8 +3,10 @@
 
 const { contextBridge } = require("electron");
 
-contextBridge.exposeInMainWorld("api", {
+const api = {
   saveConfig: () => {
     console.log("Saved");
   },
-});
+};
+
+contextBridge.exposeInMainWorld("api", api);
