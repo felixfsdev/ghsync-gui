@@ -3,11 +3,16 @@
   <head>
     <meta charset="UTF-8" />
     <title>Hello World!</title>
-
   </head>
   <body>
-    <h1>💖 Hello World!</h1>
-    <p>Welcome to your Electron application.</p>
+    <h1>Please fill in all the fields</h1>
+    <p></p>
+    <form id="configForm">
+      <input name="usersAndOrgs" placeholder="Users and organizations" />
+      <input name="pat" placeholder="Your personal Access Toke (PAT)" />
+      <input name="ignoredRepos" placeholder="Ignored repositories" />
+      <button type="submit">Save</button>
+    </form>
     <script type="module" src="/src/renderer.ts"></script>
   </body>
 </html>

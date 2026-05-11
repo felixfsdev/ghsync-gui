@@ -26,8 +26,18 @@
  * ```
  */
 
-import './index.css';
+// @ts-ignore
+import "./index.css";
 
-console.log(
-  '👋 This message is being logged by "renderer.ts", included via Vite',
-);
+const form = document.getElementById("configForm") as HTMLFormElement;
+
+form.addEventListener("submit", (event) => {
+  event.preventDefault();
+
+  const formData = new FormData(form);
+  const usersAndOrgs = formData.get("usersAndOrgs") as string;
+  const pat = formData.get("pat") as string;
+  const ignoredRepos = formData.get("ignoredRepos") as string;
+
+  console.log({ usersAndOrgs, pat, ignoredRepos });
+});
