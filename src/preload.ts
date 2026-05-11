@@ -1,15 +1,15 @@
 // See the Electron documentation for details on how to use preload scripts:
 // https://www.electronjs.org/docs/latest/tutorial/process-model#preload-scripts
 
-const { contextBridge } = require("electron");
+const { contextBridge, ipcRenderer } = require("electron");
 
 const api = {
   config: {
     save: () => {
-      console.log("Saved");
+      ipcRenderer.invoke("config:save");
     },
     load: () => {
-      console.log("Loaded");
+      ipcRenderer.invoke("config:load");
     },
   },
 };
