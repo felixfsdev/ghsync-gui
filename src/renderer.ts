@@ -31,7 +31,7 @@ import "./index.css";
 
 const configForm = document.getElementById("configForm") as HTMLFormElement;
 
-configForm.addEventListener("submit", (event) => {
+configForm.addEventListener("submit", async (event) => {
   event.preventDefault();
 
   const formData = new FormData(configForm);
@@ -39,11 +39,12 @@ configForm.addEventListener("submit", (event) => {
   const pat = formData.get("pat") as string;
   const ignoredRepos = formData.get("ignoredRepos") as string;
 
-  window.api.saveConfig({
+  await window.api.saveConfig({
     usersAndOrgs: usersAndOrgs,
     pat: pat,
     ignoredRepos: ignoredRepos,
   });
 
-  console.log("Loaded config: " + String(window.api.loadConfig()));
+  const config = await window.api.loadConfig();
+  console.log("Loaded config:", config);
 });
