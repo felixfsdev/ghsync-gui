@@ -15,3 +15,5 @@ const api = {
 };
 
 contextBridge.exposeInMainWorld("api", api);
+
+export type API = typeof api;
