@@ -2,6 +2,7 @@ import { app, BrowserWindow, ipcMain } from "electron";
 import path from "node:path";
 import started from "electron-squirrel-startup";
 import Store from "electron-store";
+import registerIPCHandlers from "./ipc-handlers";
 
 const store = new Store();
 
@@ -37,13 +38,9 @@ const createWindow = () => {
 // initialization and is ready to create browser windows.
 // Some APIs can only be used after this event occurs.
 app.on("ready", () => {
-  ipcMain.handle("config:save", () => {
-    console.log("Saved by main.ts");
-  });
-
-  ipcMain.handle("config:load", () => {
-    console.log("Loaded by main.ts");
-  });
+  // Custom function to register IPC handlers so that
+  // they can be separated from this file.
+  registerIPCHandlers();
 
   createWindow();
 });
