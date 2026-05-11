@@ -1,11 +1,12 @@
 import { ipcMain } from "electron";
+import { saveConfig, loadConfig } from "./config";
 
 export default function registerIPCHandlers() {
-  ipcMain.handle("config:save", () => {
-    console.log("Saved by ipc handler");
+  ipcMain.handle("saveConfig", (event, config: object) => {
+    saveConfig(config);
   });
 
-  ipcMain.handle("config:load", () => {
-    console.log("Loaded by ipc handler");
+  ipcMain.handle("loadConfig", () => {
+    return loadConfig();
   });
 }

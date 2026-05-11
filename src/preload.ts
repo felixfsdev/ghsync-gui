@@ -4,13 +4,11 @@
 const { contextBridge, ipcRenderer } = require("electron");
 
 const api = {
-  config: {
-    save: () => {
-      ipcRenderer.invoke("config:save");
-    },
-    load: () => {
-      ipcRenderer.invoke("config:load");
-    },
+  saveConfig: (config: object) => {
+    ipcRenderer.invoke("saveConfig", config);
+  },
+  loadConfig: () => {
+    return ipcRenderer.invoke("loadConfig");
   },
 };
 

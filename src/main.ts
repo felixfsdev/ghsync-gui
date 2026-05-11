@@ -1,10 +1,7 @@
-import { app, BrowserWindow, ipcMain } from "electron";
+import { app, BrowserWindow } from "electron";
 import path from "node:path";
 import started from "electron-squirrel-startup";
-import Store from "electron-store";
 import registerIPCHandlers from "./ipc-handlers";
-
-const store = new Store();
 
 // Handle creating/removing shortcuts on Windows when installing/uninstalling.
 if (started) {

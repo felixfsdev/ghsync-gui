@@ -39,7 +39,11 @@ configForm.addEventListener("submit", (event) => {
   const pat = formData.get("pat") as string;
   const ignoredRepos = formData.get("ignoredRepos") as string;
 
-  console.log({ usersAndOrgs, pat, ignoredRepos });
+  window.api.saveConfig({
+    usersAndOrgs: usersAndOrgs,
+    pat: pat,
+    ignoredRepos: ignoredRepos,
+  });
 
-  window.api.config.save();
+  console.log("Loaded config: " + String(window.api.loadConfig()));
 });
