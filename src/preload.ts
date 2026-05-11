@@ -4,8 +4,13 @@
 const { contextBridge } = require("electron");
 
 const api = {
-  saveConfig: () => {
-    console.log("Saved");
+  config: {
+    save: () => {
+      console.log("Saved");
+    },
+    load: () => {
+      console.log("Loaded");
+    },
   },
 };
 

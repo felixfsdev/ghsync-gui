@@ -29,17 +29,17 @@
 // @ts-ignore
 import "./index.css";
 
-const form = document.getElementById("configForm") as HTMLFormElement;
+const configForm = document.getElementById("configForm") as HTMLFormElement;
 
-form.addEventListener("submit", (event) => {
+configForm.addEventListener("submit", (event) => {
   event.preventDefault();
 
-  const formData = new FormData(form);
+  const formData = new FormData(configForm);
   const usersAndOrgs = formData.get("usersAndOrgs") as string;
   const pat = formData.get("pat") as string;
   const ignoredRepos = formData.get("ignoredRepos") as string;
 
   console.log({ usersAndOrgs, pat, ignoredRepos });
 
-  window.api.saveConfig();
+  window.api.config.save();
 });
