@@ -29,6 +29,27 @@
 // @ts-ignore
 import "./index.css";
 
+async function loadDefaultConfig() {
+  const config = await window.api.loadConfig();
+  const usersAndOrgsInput = document.getElementById(
+    "usersAndOrgs",
+  ) as HTMLInputElement;
+  const patInput = document.getElementById("pat") as HTMLInputElement;
+  const storagePathInput = document.getElementById(
+    "storagePath",
+  ) as HTMLInputElement;
+  const ignoredReposInput = document.getElementById(
+    "ignoredRepos",
+  ) as HTMLInputElement;
+
+  usersAndOrgsInput.value = config.usersAndOrgs.join(" ");
+  patInput.value = config.pat;
+  storagePathInput.value = config.storagePath;
+  ignoredReposInput.value = config.ignoredRepos.join(" ");
+}
+
+loadDefaultConfig();
+
 // Save config
 const configForm = document.getElementById("configForm") as HTMLFormElement;
 
@@ -53,5 +74,13 @@ configForm.addEventListener("submit", async (event) => {
 const syncBtn = document.getElementById("syncBtn") as HTMLButtonElement;
 
 syncBtn.addEventListener("click", async () => {
+  const defaultText = syncBtn.innerText;
+
+  syncBtn.disabled = true;
+  syncBtn.innerText = "Syncing...";
+
   await window.api.sync();
+
+  syncBtn.disabled = false;
+  syncBtn.innerText = defaultText;
 });

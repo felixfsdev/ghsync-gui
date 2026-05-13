@@ -10,7 +10,7 @@ export default function registerIPCHandlers() {
   ipcMain.handle("loadConfig", () => {
     return loadConfig();
   });
-  ipcMain.handle("sync", () => {
-    sync();
+  ipcMain.handle("sync", async () => {
+    await sync();
   });
 }

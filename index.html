@@ -14,15 +14,34 @@
       <label for="usersAndOrgs"
         >Users and organizations (separated by spaces)</label
       >
-      <input name="usersAndOrgs" placeholder="e.g., octocat github" />
+      <input
+        id="usersAndOrgs"
+        name="usersAndOrgs"
+        placeholder="e.g., octocat github"
+      />
       <label for="storagePath">Folder to backup your repositories to</label>
-      <input name="storagePath" placeholder="e.g., C:\Users\username\backups" />
-      <label for="pat">Personal Access Toke (PAT)</label>
-      <input name="pat" placeholder="e.g., github_pat_... or ghp_..." />
+      <input
+        id="storagePath"
+        name="storagePath"
+        placeholder="e.g., C:\Users\username\backups"
+      />
+      <label for="pat"
+        >Personal Access Token (if not provided, only public repositories will
+        be synced)</label
+      >
+      <input
+        id="pat"
+        name="pat"
+        placeholder="e.g., github_pat_... or ghp_..."
+      />
       <label for="ignoredRepos"
         >Ignored repositories (separated by spaces)</label
       >
-      <input name="ignoredRepos" placeholder="e.g., repo1 repo2" />
+      <input
+        id="ignoredRepos"
+        name="ignoredRepos"
+        placeholder="e.g., repo1 repo2"
+      />
       <button type="submit">Save Configuration</button>
     </form>
     <hr />

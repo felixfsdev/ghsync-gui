@@ -257,7 +257,7 @@ input:disabled,
 select:disabled,
 textarea:disabled {
   opacity: 0.6;
-  cursor: default;
+  cursor: not-allowed;
 }
 
 button.primary,

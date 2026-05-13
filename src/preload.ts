@@ -10,8 +10,8 @@ const api = {
   loadConfig: () => {
     return ipcRenderer.invoke("loadConfig");
   },
-  sync: () => {
-    ipcRenderer.invoke("sync");
+  sync: async () => {
+    await ipcRenderer.invoke("sync");
   },
 };
 
