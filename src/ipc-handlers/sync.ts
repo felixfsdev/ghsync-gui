@@ -1,4 +1,4 @@
-import { execSync } from "node:child_process";
+import { spawn } from "node:child_process";
 import fs from "node:fs";
 import path from "node:path";
 import { loadConfig } from "./config";
@@ -10,6 +10,35 @@ type SyncResult = {
   failedToUpdate: number;
   ignored: number;
 };
+
+function runGitCommand(
+  args: string[],
+  options: import("node:child_process").SpawnOptionsWithoutStdio = {},
+): Promise<void> {
+  return new Promise((resolve, reject) => {
+    const child = spawn("git", args, {
+      ...options,
+      shell: false,
+    });
+
+    child.stdout?.on("data", (chunk) => {
+      process.stdout.write(chunk);
+    });
+
+    child.stderr?.on("data", (chunk) => {
+      process.stderr.write(chunk);
+    });
+
+    child.on("error", reject);
+    child.on("close", (code) => {
+      if (code === 0) {
+        resolve();
+      } else {
+        reject(new Error(`git ${args.join(" ")} exited with code ${code}`));
+      }
+    });
+  });
+}
 
 async function getAllGithubRepos(
   userOrOrg: string,
@@ -81,10 +110,7 @@ export async function sync(): Promise<SyncResult> {
           : `https://github.com/${userOrOrg}/${repo}.git`;
 
         try {
-          execSync(`git clone --mirror "${cloneUrl}" "${repoPath}"`, {
-            stdio: "inherit",
-          });
-
+          await runGitCommand(["clone", "--mirror", cloneUrl, repoPath]);
           downloaded++;
         } catch (error) {
           console.error(`Failed to clone ${repo}`, error);
@@ -97,11 +123,7 @@ export async function sync(): Promise<SyncResult> {
       console.log(`Updating ${repo}`);
 
       try {
-        execSync(`git fetch --verbose`, {
-          cwd: repoPath,
-          stdio: "inherit",
-        });
-
+        await runGitCommand(["fetch", "--verbose"], { cwd: repoPath });
         updated++;
       } catch (error) {
         console.error(`Failed to update ${repo}`, error);
