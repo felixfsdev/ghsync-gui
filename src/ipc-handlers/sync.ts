@@ -1,6 +1,7 @@
 import { spawn } from "node:child_process";
 import fs from "node:fs";
 import path from "node:path";
+import type { BrowserWindow } from "electron";
 import { loadConfig } from "./config";
 
 type SyncResult = {
@@ -68,7 +69,7 @@ async function getAllGithubRepos(
   return repos.map((repo) => repo.name);
 }
 
-export async function sync(): Promise<SyncResult> {
+export async function sync(mainWindow: BrowserWindow): Promise<SyncResult> {
   const config = loadConfig();
 
   const { usersAndOrgs, pat, storagePath, ignoredRepos = [] } = config as any;
@@ -96,6 +97,10 @@ export async function sync(): Promise<SyncResult> {
     for (const repo of repos.sort()) {
       if (ignoredRepos.includes(repo)) {
         console.log(`Ignored ${repo}`);
+        mainWindow.webContents.send("syncProgress", {
+          status: "ignored",
+          repo,
+        });
         ignored++;
         continue;
       }
@@ -104,6 +109,10 @@ export async function sync(): Promise<SyncResult> {
 
       if (!fs.existsSync(repoPath)) {
         console.log(`Cloning ${repo}`);
+        mainWindow.webContents.send("syncProgress", {
+          status: "cloning",
+          repo,
+        });
 
         const cloneUrl = pat
           ? `https://${userOrOrg}:${pat}@github.com/${userOrOrg}/${repo}.git`
@@ -121,6 +130,10 @@ export async function sync(): Promise<SyncResult> {
       }
 
       console.log(`Updating ${repo}`);
+      mainWindow.webContents.send("syncProgress", {
+        status: "updating",
+        repo,
+      });
 
       try {
         await runGitCommand(["fetch", "--verbose"], { cwd: repoPath });
@@ -132,13 +145,22 @@ export async function sync(): Promise<SyncResult> {
     }
   }
 
-  console.log(`
+  const summary = `
 Downloaded: ${downloaded}
 Failed to download: ${failedToDownload}
 Updated: ${updated}
 Failed to update: ${failedToUpdate}
 Ignored: ${ignored}
-`);
+`;
+
+  console.log(summary);
+  mainWindow.webContents.send("syncComplete", {
+    downloaded,
+    failedToDownload,
+    updated,
+    failedToUpdate,
+    ignored,
+  });
 
   return {
     downloaded,

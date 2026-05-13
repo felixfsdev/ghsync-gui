@@ -8,7 +8,7 @@ if (started) {
   app.quit();
 }
 
-const createWindow = () => {
+const createWindowAndReturn = () => {
   // Create the browser window.
   const mainWindow = new BrowserWindow({
     width: 800,
@@ -29,6 +29,8 @@ const createWindow = () => {
 
   // Open the DevTools.
   mainWindow.webContents.openDevTools();
+
+  return mainWindow;
 };
 
 // This method will be called when Electron has finished
@@ -37,9 +39,8 @@ const createWindow = () => {
 app.on("ready", () => {
   // Custom function to register IPC handlers so that
   // they can be separated from this file.
-  registerIPCHandlers();
-
-  createWindow();
+  const mainWindow = createWindowAndReturn();
+  registerIPCHandlers(mainWindow);
 });
 
 // Quit when all windows are closed, except on macOS. There, it's common
@@ -55,7 +56,7 @@ app.on("activate", () => {
   // On OS X it's common to re-create a window in the app when the
   // dock icon is clicked and there are no other windows open.
   if (BrowserWindow.getAllWindows().length === 0) {
-    createWindow();
+    createWindowAndReturn();
   }
 });
 

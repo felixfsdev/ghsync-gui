@@ -13,6 +13,22 @@ const api = {
   sync: async () => {
     await ipcRenderer.invoke("sync");
   },
+  onSyncProgress: (
+    callback: (data: { status: string; repo: string }) => void,
+  ) => {
+    ipcRenderer.on("syncProgress", (_: any, data: any) => callback(data));
+  },
+  onSyncComplete: (
+    callback: (data: {
+      downloaded: number;
+      failedToDownload: number;
+      updated: number;
+      failedToUpdate: number;
+      ignored: number;
+    }) => void,
+  ) => {
+    ipcRenderer.on("syncComplete", (_: any, data: any) => callback(data));
+  },
 };
 
 contextBridge.exposeInMainWorld("api", api);

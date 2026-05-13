@@ -72,12 +72,36 @@ configForm.addEventListener("submit", async (event) => {
 
 // Sync
 const syncBtn = document.getElementById("syncBtn") as HTMLButtonElement;
+const progressEl = document.getElementById("progress") as HTMLParagraphElement;
+const outputEl = document.getElementById("output") as HTMLParagraphElement;
+
+// Listen for progress updates
+window.api.onSyncProgress((data: { status: string; repo: string }) => {
+  const statusText = data.status.charAt(0).toUpperCase() + data.status.slice(1);
+  progressEl.innerText = `${statusText}: ${data.repo}`;
+});
+
+// Listen for sync completion
+window.api.onSyncComplete(
+  (data: {
+    downloaded: number;
+    failedToDownload: number;
+    updated: number;
+    failedToUpdate: number;
+    ignored: number;
+  }) => {
+    const summary = `Downloaded: ${data.downloaded}, Failed: ${data.failedToDownload}, Updated: ${data.updated}, Failed to update: ${data.failedToUpdate}, Ignored: ${data.ignored}`;
+    outputEl.innerText = summary;
+  },
+);
 
 syncBtn.addEventListener("click", async () => {
   const defaultText = syncBtn.innerText;
 
   syncBtn.disabled = true;
   syncBtn.innerText = "Syncing...";
+  progressEl.innerText = "";
+  outputEl.innerText = "";
 
   await window.api.sync();
 
