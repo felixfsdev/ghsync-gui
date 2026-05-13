@@ -40,9 +40,9 @@ configForm.addEventListener("submit", async (event) => {
   const ignoredRepos = formData.get("ignoredRepos") as string;
 
   await window.api.saveConfig({
-    usersAndOrgs: usersAndOrgs,
+    usersAndOrgs: usersAndOrgs.split(" "),
     pat: pat,
-    ignoredRepos: ignoredRepos,
+    ignoredRepos: ignoredRepos.split(" "),
   });
 
   const config = await window.api.loadConfig();
