@@ -31,20 +31,20 @@ import "./index.css";
 
 const configForm = document.getElementById("configForm") as HTMLFormElement;
 
+// Save config
 configForm.addEventListener("submit", async (event) => {
   event.preventDefault();
 
   const formData = new FormData(configForm);
   const usersAndOrgs = formData.get("usersAndOrgs") as string;
   const pat = formData.get("pat") as string;
+  const storagePath = formData.get("storagePath") as string;
   const ignoredRepos = formData.get("ignoredRepos") as string;
 
   await window.api.saveConfig({
     usersAndOrgs: usersAndOrgs.split(" "),
     pat: pat,
+    storagePath: storagePath,
     ignoredRepos: ignoredRepos.split(" "),
   });
-
-  const config = await window.api.loadConfig();
-  console.log("Loaded config:", config);
 });
