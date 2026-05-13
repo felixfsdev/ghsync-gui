@@ -3,15 +3,25 @@
   <head>
     <meta charset="UTF-8" />
     <title>Hello World!</title>
+    <link rel="stylesheet" href="style.css" />
   </head>
   <body>
-    <h1>Please fill in all the fields</h1>
-    <p></p>
-    <form id="configForm">
-      <input name="usersAndOrgs" placeholder="Users and organizations" />
-      <input name="pat" placeholder="Your personal Access Toke (PAT)" />
-      <input name="ignoredRepos" placeholder="Ignored repositories" />
-      <button type="submit">Save</button>
+    <h1>Configuration</h1>
+    <form
+      id="configForm"
+      style="display: flex; flex-direction: column; gap: 10px"
+    >
+      <label for="usersAndOrgs"
+        >Users and organizations (separated by spaces)</label
+      >
+      <input name="usersAndOrgs" placeholder="e.g., octocat github" />
+      <label for="pat">Personal Access Toke (PAT)</label>
+      <input name="pat" />
+      <label for="ignoredRepos"
+        >Ignored repositories (separated by spaces)</label
+      >
+      <input name="ignoredRepos" placeholder="e.g., repo1 repo2" />
+      <button type="submit">Save Configuration</button>
     </form>
     <script type="module" src="/src/renderer.ts"></script>
   </body>

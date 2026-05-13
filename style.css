@@ -1,0 +1,382 @@
+/*
+ * Windows Native Like Stylesheet
+ * --------------------------------
+ * A lightweight CSS foundation that gives standard HTML elements
+ * a Windows-native desktop application aesthetic.
+ *
+ * Features:
+ * - Consistent styling for common semantic HTML elements
+ * - Centralized theme tokens via CSS custom properties
+ * - Automatic light/dark theme adaptation using
+ *   prefers-color-scheme
+ * - Subtle Windows-inspired spacing, borders, typography,
+ *   controls, and elevation
+ * - Sensible defaults for forms, tables, dialogs, alerts,
+ *   code blocks, and interactive elements
+ *
+ * Created by ChatGPT (OpenAI)
+ */
+
+:root {
+  color-scheme: light dark;
+
+  --font-ui: "Segoe UI", "Inter", system-ui, sans-serif;
+  --font-mono: "Cascadia Code", "Consolas", monospace;
+
+  --color-bg: #f3f3f3;
+  --color-surface: #ffffff;
+  --color-surface-alt: #f8f8f8;
+  --color-border: #d4d4d4;
+  --color-border-strong: #b9b9b9;
+  --color-text: #1f1f1f;
+  --color-text-muted: #5f5f5f;
+  --color-accent: #0067c0;
+  --color-accent-hover: #005aa8;
+  --color-accent-active: #004b8f;
+  --color-accent-text: #ffffff;
+  --color-danger: #c42b1c;
+  --color-success: #0f7b0f;
+  --color-warning: #9d5d00;
+  --color-shadow: rgba(0, 0, 0, 0.08);
+  --color-overlay: rgba(0, 0, 0, 0.18);
+
+  --radius-sm: 4px;
+  --radius-md: 6px;
+  --radius-lg: 8px;
+
+  --shadow-sm: 0 1px 2px var(--color-shadow);
+  --shadow-md: 0 2px 6px rgba(0, 0, 0, 0.12);
+
+  --transition-fast: 120ms ease;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --color-bg: #202020;
+    --color-surface: #2b2b2b;
+    --color-surface-alt: #313131;
+    --color-border: #3f3f3f;
+    --color-border-strong: #555555;
+    --color-text: #f3f3f3;
+    --color-text-muted: #b3b3b3;
+    --color-accent: #4cc2ff;
+    --color-accent-hover: #63cbff;
+    --color-accent-active: #36b8f5;
+    --color-accent-text: #0f0f0f;
+    --color-danger: #ff7b72;
+    --color-success: #6ccb5f;
+    --color-warning: #ffb74d;
+    --color-shadow: rgba(0, 0, 0, 0.35);
+    --color-overlay: rgba(0, 0, 0, 0.5);
+  }
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  font-size: 16px;
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  margin: 0;
+  font-family: var(--font-ui);
+  background: var(--color-bg);
+  color: var(--color-text);
+  line-height: 1.5;
+  text-rendering: optimizeLegibility;
+}
+
+a {
+  color: var(--color-accent);
+  text-decoration: none;
+  transition: color var(--transition-fast);
+}
+
+a:hover {
+  color: var(--color-accent-hover);
+  text-decoration: underline;
+}
+
+hr {
+  border: 0;
+  border-top: 1px solid var(--color-border);
+  margin: 1.5rem 0;
+}
+
+img,
+picture,
+video,
+canvas,
+svg {
+  display: block;
+  max-width: 100%;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  margin: 0 0 0.75rem;
+  font-weight: 600;
+  line-height: 1.2;
+}
+
+p,
+ul,
+ol,
+dl,
+blockquote,
+pre,
+table {
+  margin: 0 0 1rem;
+}
+
+small,
+.text-muted {
+  color: var(--color-text-muted);
+}
+
+code,
+kbd,
+samp,
+pre {
+  font-family: var(--font-mono);
+}
+
+code,
+kbd {
+  padding: 0.1rem 0.35rem;
+  background: var(--color-surface-alt);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+}
+
+pre {
+  overflow-x: auto;
+  padding: 1rem;
+  background: var(--color-surface-alt);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+}
+
+blockquote {
+  padding: 0.75rem 1rem;
+  border-left: 4px solid var(--color-accent);
+  background: var(--color-surface-alt);
+  border-radius: 0 var(--radius-md) var(--radius-md) 0;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  overflow: hidden;
+}
+
+th,
+td {
+  padding: 0.75rem 1rem;
+  border-bottom: 1px solid var(--color-border);
+  text-align: left;
+}
+
+th {
+  background: var(--color-surface-alt);
+  font-weight: 600;
+}
+
+tr:last-child td {
+  border-bottom: 0;
+}
+
+button,
+input,
+select,
+textarea {
+  font: inherit;
+}
+
+button,
+input,
+select,
+textarea {
+  border: 1px solid var(--color-border-strong);
+  border-radius: var(--radius-sm);
+  background: var(--color-surface);
+  color: var(--color-text);
+  transition:
+    border-color var(--transition-fast),
+    box-shadow var(--transition-fast),
+    background-color var(--transition-fast);
+}
+
+input,
+select,
+textarea {
+  width: 100%;
+  padding: 0.55rem 0.75rem;
+  box-shadow: inset 0 1px 2px var(--color-shadow);
+}
+
+textarea {
+  min-height: 6rem;
+  resize: vertical;
+}
+
+button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 0.55rem 1rem;
+  cursor: pointer;
+  user-select: none;
+  background-color: var(--color-surface);
+  box-shadow: var(--shadow-sm);
+}
+
+button:hover {
+  background-color: var(--color-surface-alt);
+}
+
+button:active {
+  transform: translateY(1px);
+}
+
+button:disabled,
+input:disabled,
+select:disabled,
+textarea:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+button.primary,
+input[type="submit"],
+input[type="button"] {
+  background: var(--color-accent);
+  border-color: var(--color-accent-active);
+  color: var(--color-accent-text);
+}
+
+button.primary:hover,
+input[type="submit"]:hover,
+input[type="button"]:hover {
+  background: var(--color-accent-hover);
+}
+
+:focus-visible {
+  outline: 2px solid color-mix(in srgb, var(--color-accent) 70%, transparent);
+  outline-offset: 2px;
+}
+
+input[type="checkbox"],
+input[type="radio"] {
+  width: 1rem;
+  height: 1rem;
+  accent-color: var(--color-accent);
+  vertical-align: middle;
+}
+
+progress {
+  width: 100%;
+  height: 1rem;
+  accent-color: var(--color-accent);
+}
+
+fieldset {
+  padding: 1rem;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+}
+
+legend {
+  padding: 0 0.5rem;
+  color: var(--color-text-muted);
+}
+
+details {
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  padding: 0.75rem 1rem;
+}
+
+summary {
+  cursor: pointer;
+  font-weight: 600;
+}
+
+dialog {
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  background: var(--color-surface);
+  color: var(--color-text);
+  padding: 1.5rem;
+  box-shadow: var(--shadow-md);
+}
+
+dialog::backdrop {
+  background: var(--color-overlay);
+}
+
+.card {
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  padding: 1rem;
+  box-shadow: var(--shadow-sm);
+}
+
+.alert {
+  padding: 0.75rem 1rem;
+  border-radius: var(--radius-md);
+  border: 1px solid transparent;
+}
+
+.alert.success {
+  background: color-mix(in srgb, var(--color-success) 12%, transparent);
+  border-color: color-mix(in srgb, var(--color-success) 30%, transparent);
+}
+
+.alert.warning {
+  background: color-mix(in srgb, var(--color-warning) 12%, transparent);
+  border-color: color-mix(in srgb, var(--color-warning) 30%, transparent);
+}
+
+.alert.error {
+  background: color-mix(in srgb, var(--color-danger) 12%, transparent);
+  border-color: color-mix(in srgb, var(--color-danger) 30%, transparent);
+}
+
+::-webkit-scrollbar {
+  width: 12px;
+  height: 12px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--color-surface-alt);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--color-border-strong);
+  border-radius: 999px;
+  border: 3px solid var(--color-surface-alt);
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--color-text-muted);
+}
+
+::selection {
+  background: color-mix(in srgb, var(--color-accent) 35%, transparent);
+}
