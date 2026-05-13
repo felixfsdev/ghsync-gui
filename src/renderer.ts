@@ -29,9 +29,9 @@
 // @ts-ignore
 import "./index.css";
 
+// Save config
 const configForm = document.getElementById("configForm") as HTMLFormElement;
 
-// Save config
 configForm.addEventListener("submit", async (event) => {
   event.preventDefault();
 
@@ -47,4 +47,11 @@ configForm.addEventListener("submit", async (event) => {
     storagePath: storagePath,
     ignoredRepos: ignoredRepos.split(" "),
   });
+});
+
+// Sync
+const syncBtn = document.getElementById("syncBtn") as HTMLButtonElement;
+
+syncBtn.addEventListener("click", async () => {
+  await window.api.sync();
 });

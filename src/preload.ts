@@ -10,6 +10,9 @@ const api = {
   loadConfig: () => {
     return ipcRenderer.invoke("loadConfig");
   },
+  sync: () => {
+    ipcRenderer.invoke("sync");
+  },
 };
 
 contextBridge.exposeInMainWorld("api", api);
