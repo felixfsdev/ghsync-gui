@@ -90,6 +90,8 @@ window.api.onSyncComplete(
     failedToUpdate: number;
     ignored: number;
   }) => {
+    progressEl.innerText = "";
+
     const summary = `Downloaded: ${data.downloaded}, Failed: ${data.failedToDownload}, Updated: ${data.updated}, Failed to update: ${data.failedToUpdate}, Ignored: ${data.ignored}`;
     outputEl.innerText = summary;
   },
