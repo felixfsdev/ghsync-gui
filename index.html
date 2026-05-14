@@ -2,7 +2,7 @@
 <html>
   <head>
     <meta charset="UTF-8" />
-    <title>Hello World!</title>
+    <title>ghsync-gui</title>
     <link rel="stylesheet" href="style.css" />
   </head>
   <body>
@@ -42,9 +42,17 @@
         name="ignoredRepos"
         placeholder="e.g., repo1 repo2"
       />
+      <div>
+        <input type="checkbox" id="lfs" name="lfs" />
+        <label for="lfs">Enable Git LFS (leave it off if you are unsure)</label>
+      </div>
       <button type="submit">Save Configuration</button>
     </form>
     <hr />
+    <p>
+      Before syncing, ensure that Git (and Git LFS if it is turned on) is
+      installed in your system and is connected to the internet.
+    </p>
     <button id="syncBtn" style="width: 100%; margin-bottom: 1rem">
       Sync Now!
     </button>

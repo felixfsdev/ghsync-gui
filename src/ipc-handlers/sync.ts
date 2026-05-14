@@ -61,8 +61,13 @@ async function getAllGithubRepos(
   return repos.map((repo) => repo.name);
 }
 
+async function runLfs(repoPath: string) {
+  await runGitCommand(["lfs", "install", "--local"], { cwd: repoPath });
+  await runGitCommand(["lfs", "fetch", "--all"], { cwd: repoPath });
+}
+
 export async function sync(mainWindow: BrowserWindow) {
-  const config = loadConfig();
+  const config = loadConfig() as any;
 
   const { usersAndOrgs, pat, storagePath, ignoredRepos = [] } = config as any;
 
@@ -112,6 +117,11 @@ export async function sync(mainWindow: BrowserWindow) {
 
         try {
           await runGitCommand(["clone", "--mirror", cloneUrl, repoPath]);
+
+          if (config.lfs === "on") {
+            await runLfs(repoPath);
+          }
+
           downloaded.push(repo);
         } catch (error) {
           console.error(`Failed to clone ${repo}`, error);
@@ -129,6 +139,11 @@ export async function sync(mainWindow: BrowserWindow) {
 
       try {
         await runGitCommand(["fetch", "--verbose"], { cwd: repoPath });
+
+        if (config.lfs === "on") {
+          await runLfs(repoPath);
+        }
+
         updated.push(repo);
       } catch (error) {
         console.error(`Failed to update ${repo}`, error);

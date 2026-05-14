@@ -41,11 +41,13 @@ async function loadDefaultConfig() {
   const ignoredReposInput = document.getElementById(
     "ignoredRepos",
   ) as HTMLInputElement;
+  const lfsInput = document.getElementById("lfs") as HTMLInputElement;
 
   usersAndOrgsInput.value = config.usersAndOrgs.join(" ");
   patInput.value = config.pat;
   storagePathInput.value = config.storagePath;
   ignoredReposInput.value = config.ignoredRepos.join(" ");
+  lfsInput.checked = config.lfs === "on";
 }
 
 loadDefaultConfig();
@@ -61,12 +63,14 @@ configForm.addEventListener("submit", async (event) => {
   const pat = formData.get("pat") as string;
   const storagePath = formData.get("storagePath") as string;
   const ignoredRepos = formData.get("ignoredRepos") as string;
+  const lfs = formData.get("lfs") as string;
 
   await window.api.saveConfig({
     usersAndOrgs: usersAndOrgs.split(" "),
     pat: pat,
     storagePath: storagePath,
     ignoredRepos: ignoredRepos.split(" "),
+    lfs: lfs,
   });
 });
 
