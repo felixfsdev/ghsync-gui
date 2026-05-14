@@ -11,19 +11,18 @@
       id="configForm"
       style="display: flex; flex-direction: column; gap: 10px"
     >
-      <label for="usersAndOrgs"
-        >Users and organizations (separated by spaces)</label
-      >
-      <input
-        id="usersAndOrgs"
-        name="usersAndOrgs"
-        placeholder="e.g., torvalds"
-      />
       <label for="storagePath">Folder to backup your repositories to</label>
       <input
         id="storagePath"
         name="storagePath"
         placeholder="e.g., C:\Users\username\backups"
+      />
+      <label for="pat">Your GitHub PAT</label>
+      <input
+        id="pat"
+        name="pat"
+        type="password"
+        placeholder="e.g., github_pat_..."
       />
       <label for="ignoredRepos"
         >Ignored repositories (full name, separated by spaces)</label

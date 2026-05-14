@@ -31,20 +31,19 @@ import "./index.css";
 
 async function loadDefaultConfig() {
   const config = await window.api.loadConfig();
-  const usersAndOrgsInput = document.getElementById(
-    "usersAndOrgs",
-  ) as HTMLInputElement;
   const storagePathInput = document.getElementById(
     "storagePath",
   ) as HTMLInputElement;
+  const patInput = document.getElementById("pat") as HTMLInputElement;
+
   const ignoredReposInput = document.getElementById(
     "ignoredRepos",
   ) as HTMLInputElement;
   const lfsInput = document.getElementById("lfs") as HTMLInputElement;
 
-  usersAndOrgsInput.value = config.usersAndOrgs.join(" ");
   storagePathInput.value = config.storagePath;
   ignoredReposInput.value = config.ignoredRepos.join(" ");
+  patInput.value = config.pat;
   lfsInput.checked = config.lfs === "on";
 }
 
@@ -57,14 +56,15 @@ configForm.addEventListener("submit", async (event) => {
   event.preventDefault();
 
   const formData = new FormData(configForm);
-  const usersAndOrgs = formData.get("usersAndOrgs") as string;
+
   const storagePath = formData.get("storagePath") as string;
+  const pat = formData.get("pat") as string;
   const ignoredRepos = formData.get("ignoredRepos") as string;
   const lfs = formData.get("lfs") as string;
 
   await window.api.saveConfig({
-    usersAndOrgs: usersAndOrgs.split(" "),
     storagePath: storagePath,
+    pat: pat,
     ignoredRepos: ignoredRepos.split(" "),
     lfs: lfs,
   });

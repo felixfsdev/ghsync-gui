@@ -34,10 +34,12 @@
     "electron": "42.0.1",
     "eslint": "^8.57.1",
     "eslint-plugin-import": "^2.32.0",
+    "tsx": "^4.21.1",
     "typescript": "~4.5.4",
     "vite": "^5.4.21"
   },
   "dependencies": {
+    "@octokit/rest": "^22.0.1",
     "electron-squirrel-startup": "^1.0.1",
     "electron-store": "^11.0.2"
   }
