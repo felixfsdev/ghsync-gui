@@ -91,22 +91,22 @@ window.api.onSyncComplete(
     ignored: number;
   }) => {
     progressEl.innerText = "";
+    progressEl.classList.add("hidden");
 
-    const summary = `Downloaded: ${data.downloaded}, Failed: ${data.failedToDownload}, Updated: ${data.updated}, Failed to update: ${data.failedToUpdate}, Ignored: ${data.ignored}`;
+    const summary = `Sync complete. Summary: ${data.downloaded} downloaded, ${data.failedToDownload} failed to download, ${data.updated} updated, ${data.failedToUpdate} failed to update, ${data.ignored} ignored.`;
     outputEl.innerText = summary;
   },
 );
 
 syncBtn.addEventListener("click", async () => {
-  const defaultText = syncBtn.innerText;
-
   syncBtn.disabled = true;
   syncBtn.innerText = "Syncing...";
   progressEl.innerText = "";
+  progressEl.classList.remove("hidden");
   outputEl.innerText = "";
 
   await window.api.sync();
 
   syncBtn.disabled = false;
-  syncBtn.innerText = defaultText;
+  syncBtn.innerText = "Sync Again";
 });
