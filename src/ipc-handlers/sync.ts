@@ -145,12 +145,7 @@ export async function sync(mainWindow: BrowserWindow): Promise<SyncResult> {
     }
   }
 
-  const summary = `
-Downloaded: ${downloaded}
-Failed to download: ${failedToDownload}
-Updated: ${updated}
-Failed to update: ${failedToUpdate}
-Ignored: ${ignored}
+  const summary = `Downloaded: ${downloaded} Failed to download: ${failedToDownload} Updated: ${updated} Failed to update: ${failedToUpdate} Ignored: ${ignored}
 `;
 
   console.log(summary);
