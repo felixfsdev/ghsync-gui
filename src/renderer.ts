@@ -79,7 +79,7 @@ const saveConfigBtn = document.getElementById(
 const outputEl = document.getElementById("output") as HTMLParagraphElement;
 
 // Listen for progress updates
-window.api.onOutputChange((output) => {
+window.api.onOutputChange((output: any) => {
   outputEl.innerText = output;
 });
 

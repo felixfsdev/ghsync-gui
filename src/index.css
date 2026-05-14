@@ -6,13 +6,3 @@ body {
   max-width: 38rem;
   padding: 2rem;
 }
-
-.truncate {
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-
-.hidden {
-  display: none;
-}
