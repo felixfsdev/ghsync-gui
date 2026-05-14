@@ -31,8 +31,10 @@ const createWindowAndReturn = () => {
     );
   }
 
-  // Open the DevTools.
-  // mainWindow.webContents.openDevTools();
+  // Open DevTools only in development
+  if (!app.isPackaged) {
+    mainWindow.webContents.openDevTools();
+  }
 
   return mainWindow;
 };

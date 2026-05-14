@@ -3,10 +3,7 @@ import fs from "node:fs";
 import path from "node:path";
 import type { BrowserWindow } from "electron";
 import { loadConfig } from "./config";
-
-export const logs: string[] = [];
-
-type SyncStatus = "ignored" | "cloning" | "updating";
+import { dialog } from "electron";
 
 type SyncSummary = {
   downloaded: string[];
@@ -16,17 +13,10 @@ type SyncSummary = {
   ignored: string[];
 };
 
-type Config = {
-  usersAndOrgs: string[];
-  storagePath: string;
-  ignoredRepos?: string[];
-  lfs?: "on" | "off";
-};
-
 export async function sync(mainWindow: BrowserWindow): Promise<void> {
-  const config = loadConfig() as Config;
+  const config = loadConfig() as any;
 
-  ensureDirectoryExists(config.storagePath);
+  fs.mkdirSync(config.storagePath, { recursive: true });
 
   const summary: SyncSummary = {
     downloaded: [],
@@ -45,9 +35,7 @@ export async function sync(mainWindow: BrowserWindow): Promise<void> {
     });
   }
 
-  mainWindow.webContents.send("syncComplete", {
-    message: buildSummaryMessage(summary),
-  });
+  mainWindow.webContents.send("outputChange", buildSummaryMessage(summary));
 }
 
 async function syncUserOrOrg({
@@ -57,7 +45,7 @@ async function syncUserOrOrg({
   mainWindow,
 }: {
   userOrOrg: string;
-  config: Config;
+  config: any;
   summary: SyncSummary;
   mainWindow: BrowserWindow;
 }): Promise<void> {
@@ -66,7 +54,13 @@ async function syncUserOrOrg({
   try {
     repos = await getAllPublicGithubRepos(userOrOrg);
   } catch (error) {
-    appendLog(`Failed to fetch repos for ${userOrOrg}: ${formatError(error)}`);
+    dialog.showMessageBox({
+      type: "error",
+      title: "Failed to fetch repos",
+      message: `Failed to fetch the repositories of ${userOrOrg}.`,
+      buttons: ["OK"],
+    });
+
     return;
   }
 
@@ -87,17 +81,12 @@ async function syncRepository({
   mainWindow,
 }: {
   fullRepoName: string;
-  config: Config;
+  config: any;
   summary: SyncSummary;
   mainWindow: BrowserWindow;
 }): Promise<void> {
   if (config.ignoredRepos?.includes(fullRepoName)) {
-    sendSyncProgress(mainWindow, "ignored", fullRepoName);
-
     summary.ignored.push(fullRepoName);
-
-    appendLog(`Ignored ${fullRepoName}`);
-
     return;
   }
 
@@ -141,12 +130,10 @@ async function cloneRepository({
   summary: SyncSummary;
   mainWindow: BrowserWindow;
 }): Promise<void> {
-  appendLog(`Cloning ${fullRepoName}`);
-
-  sendSyncProgress(mainWindow, "cloning", fullRepoName);
+  mainWindow.webContents.send("outputChange", `Cloning ${fullRepoName}`);
 
   try {
-    ensureDirectoryExists(path.dirname(repoPath));
+    fs.mkdirSync(path.dirname(repoPath), { recursive: true });
 
     await runGitCommand(["clone", "--mirror", cloneUrl, repoPath]);
 
@@ -155,12 +142,8 @@ async function cloneRepository({
     }
 
     summary.downloaded.push(fullRepoName);
-
-    appendLog(`Successfully cloned ${fullRepoName}`);
   } catch (error) {
     summary.failedToDownload.push(fullRepoName);
-
-    appendLog(`Failed to clone ${fullRepoName}: ${formatError(error)}`);
   }
 }
 
@@ -177,12 +160,10 @@ async function updateRepository({
   summary: SyncSummary;
   mainWindow: BrowserWindow;
 }): Promise<void> {
-  appendLog(`Updating ${fullRepoName}`);
-
-  sendSyncProgress(mainWindow, "updating", fullRepoName);
+  mainWindow.webContents.send("outputChange", `Updating ${fullRepoName}`);
 
   try {
-    await runGitCommand(["fetch", "--verbose"], {
+    await runGitCommand(["fetch"], {
       cwd: repoPath,
     });
 
@@ -191,12 +172,8 @@ async function updateRepository({
     }
 
     summary.updated.push(fullRepoName);
-
-    appendLog(`Successfully updated ${fullRepoName}`);
   } catch (error) {
     summary.failedToUpdate.push(fullRepoName);
-
-    appendLog(`Failed to update ${fullRepoName}: ${formatError(error)}`);
   }
 }
 
@@ -254,44 +231,23 @@ function runGitCommand(
   });
 }
 
-function sendSyncProgress(
-  mainWindow: BrowserWindow,
-  status: SyncStatus,
-  repo: string,
-): void {
-  mainWindow.webContents.send("syncProgress", {
-    status,
-    repo,
-  });
-}
-
-function ensureDirectoryExists(directoryPath: string): void {
-  if (!fs.existsSync(directoryPath)) {
-    fs.mkdirSync(directoryPath, {
-      recursive: true,
-    });
-  }
-}
-
-function appendLog(message: string): void {
-  logs.push(message);
-}
-
-function formatError(error: unknown): string {
-  if (error instanceof Error) {
-    return error.message;
-  }
-
-  return String(error);
-}
-
 function buildSummaryMessage(summary: SyncSummary): string {
+  const failedDownloads =
+    summary.failedToDownload.length === 0
+      ? "0"
+      : summary.failedToDownload.join(", ");
+
+  const failedUpdates =
+    summary.failedToUpdate.length === 0
+      ? "0"
+      : summary.failedToUpdate.join(", ");
+
   return [
     "Sync complete. Summary:",
     `${summary.downloaded.length} downloaded.`,
-    `${formatFailedList(summary.failedToDownload)} failed to download.`,
+    `${failedDownloads} failed to download.`,
     `${summary.updated.length} updated.`,
-    `${formatFailedList(summary.failedToUpdate)} failed to update.`,
+    `${failedUpdates} failed to update.`,
     `${summary.ignored.length} ignored.`,
     summary.failedToDownload.length || summary.failedToUpdate.length
       ? "Delete failed repositories in the backup folder to trigger a reclone."
@@ -299,8 +255,4 @@ function buildSummaryMessage(summary: SyncSummary): string {
   ]
     .filter(Boolean)
     .join(" ");
-}
-
-function formatFailedList(items: string[]): string {
-  return items.length === 0 ? "0" : items.join(", ");
 }

@@ -76,30 +76,17 @@ const saveConfigBtn = document.getElementById(
   "saveConfigBtn",
 ) as HTMLButtonElement;
 
-const progressEl = document.getElementById("progress") as HTMLParagraphElement;
 const outputEl = document.getElementById("output") as HTMLParagraphElement;
 
 // Listen for progress updates
-window.api.onSyncProgress((data: { status: string; repo: string }) => {
-  const statusText = data.status.charAt(0).toUpperCase() + data.status.slice(1);
-  progressEl.innerText = `${statusText}: ${data.repo}`;
-});
-
-// Listen for sync completion
-window.api.onSyncComplete((data) => {
-  progressEl.innerText = "";
-  progressEl.classList.add("hidden");
-
-  outputEl.innerText = data.message;
+window.api.onOutputChange((output) => {
+  outputEl.innerText = output;
 });
 
 syncBtn.addEventListener("click", async () => {
   syncBtn.disabled = true;
   saveConfigBtn.disabled = true;
   syncBtn.innerText = "Syncing (do not close the app)...";
-  progressEl.innerText = "";
-  progressEl.classList.remove("hidden");
-  outputEl.innerText = "";
 
   await window.api.sync();
 
