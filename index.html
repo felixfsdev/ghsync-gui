@@ -17,7 +17,7 @@
       <input
         id="usersAndOrgs"
         name="usersAndOrgs"
-        placeholder="e.g., octocat github"
+        placeholder="e.g., torvalds"
       />
       <label for="storagePath">Folder to backup your repositories to</label>
       <input
@@ -25,33 +25,25 @@
         name="storagePath"
         placeholder="e.g., C:\Users\username\backups"
       />
-      <label for="pat"
-        >Personal Access Token (if not provided, only public repositories will
-        be synced)</label
-      >
-      <input
-        id="pat"
-        name="pat"
-        placeholder="e.g., github_pat_... or ghp_..."
-      />
       <label for="ignoredRepos"
-        >Ignored repositories (separated by spaces)</label
+        >Ignored repositories (full name, separated by spaces)</label
       >
       <input
         id="ignoredRepos"
         name="ignoredRepos"
-        placeholder="e.g., repo1 repo2"
+        placeholder="e.g., torvalds/linux "
       />
       <div>
         <input type="checkbox" id="lfs" name="lfs" />
         <label for="lfs">Enable Git LFS (leave it off if you are unsure)</label>
       </div>
-      <button type="submit">Save Configuration</button>
+      <button type="submit" id="saveConfigBtn">Save Configuration</button>
     </form>
     <hr />
     <p>
       Before syncing, ensure that Git (and Git LFS if it is turned on) is
-      installed in your system and is connected to the internet.
+      installed in your system and is connected to the internet. We only support
+      syncing public repos at the moment.
     </p>
     <button id="syncBtn" style="width: 100%; margin-bottom: 1rem">
       Sync Now!

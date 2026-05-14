@@ -34,7 +34,6 @@ async function loadDefaultConfig() {
   const usersAndOrgsInput = document.getElementById(
     "usersAndOrgs",
   ) as HTMLInputElement;
-  const patInput = document.getElementById("pat") as HTMLInputElement;
   const storagePathInput = document.getElementById(
     "storagePath",
   ) as HTMLInputElement;
@@ -44,7 +43,6 @@ async function loadDefaultConfig() {
   const lfsInput = document.getElementById("lfs") as HTMLInputElement;
 
   usersAndOrgsInput.value = config.usersAndOrgs.join(" ");
-  patInput.value = config.pat;
   storagePathInput.value = config.storagePath;
   ignoredReposInput.value = config.ignoredRepos.join(" ");
   lfsInput.checked = config.lfs === "on";
@@ -60,14 +58,12 @@ configForm.addEventListener("submit", async (event) => {
 
   const formData = new FormData(configForm);
   const usersAndOrgs = formData.get("usersAndOrgs") as string;
-  const pat = formData.get("pat") as string;
   const storagePath = formData.get("storagePath") as string;
   const ignoredRepos = formData.get("ignoredRepos") as string;
   const lfs = formData.get("lfs") as string;
 
   await window.api.saveConfig({
     usersAndOrgs: usersAndOrgs.split(" "),
-    pat: pat,
     storagePath: storagePath,
     ignoredRepos: ignoredRepos.split(" "),
     lfs: lfs,
@@ -76,6 +72,10 @@ configForm.addEventListener("submit", async (event) => {
 
 // Sync
 const syncBtn = document.getElementById("syncBtn") as HTMLButtonElement;
+const saveConfigBtn = document.getElementById(
+  "saveConfigBtn",
+) as HTMLButtonElement;
+
 const progressEl = document.getElementById("progress") as HTMLParagraphElement;
 const outputEl = document.getElementById("output") as HTMLParagraphElement;
 
@@ -95,6 +95,7 @@ window.api.onSyncComplete((data) => {
 
 syncBtn.addEventListener("click", async () => {
   syncBtn.disabled = true;
+  saveConfigBtn.disabled = true;
   syncBtn.innerText = "Syncing (do not close the app)...";
   progressEl.innerText = "";
   progressEl.classList.remove("hidden");
@@ -103,5 +104,6 @@ syncBtn.addEventListener("click", async () => {
   await window.api.sync();
 
   syncBtn.disabled = false;
+  saveConfigBtn.disabled = false;
   syncBtn.innerText = "Sync Again";
 });
