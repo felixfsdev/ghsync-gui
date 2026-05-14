@@ -154,10 +154,10 @@ export async function sync(mainWindow: BrowserWindow) {
 
   const summary = [
     "Sync complete. Summary:",
-    `${downloaded.length} downloaded,`,
-    `${failedToDownload.length === 0 ? "0" : failedToDownload.join(", ")} failed to download,`,
-    `${updated.length} updated,`,
-    `${failedToUpdate.length === 0 ? "0" : failedToUpdate.join(", ")} failed to update,`,
+    `${downloaded.length} downloaded.`,
+    `${failedToDownload.length === 0 ? "0" : failedToDownload.join(", ")} failed to download.`,
+    `${updated.length} updated.`,
+    `${failedToUpdate.length === 0 ? "0" : failedToUpdate.join(", ")} failed to update.`,
     `${ignored.length} ignored.`,
     failedToDownload.length || failedToUpdate.length
       ? "Delete the failed repositories in the backup folder to trigger a reclone."
