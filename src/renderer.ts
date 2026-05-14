@@ -95,7 +95,7 @@ window.api.onSyncComplete((data) => {
 
 syncBtn.addEventListener("click", async () => {
   syncBtn.disabled = true;
-  syncBtn.innerText = "Syncing...";
+  syncBtn.innerText = "Syncing (do not close the app)...";
   progressEl.innerText = "";
   progressEl.classList.remove("hidden");
   outputEl.innerText = "";
