@@ -4,14 +4,6 @@ import path from "node:path";
 import type { BrowserWindow } from "electron";
 import { loadConfig } from "./config";
 
-type SyncResult = {
-  downloaded: number;
-  failedToDownload: number;
-  updated: number;
-  failedToUpdate: number;
-  ignored: number;
-};
-
 function runGitCommand(
   args: string[],
   options: import("node:child_process").SpawnOptionsWithoutStdio = {},
@@ -69,7 +61,7 @@ async function getAllGithubRepos(
   return repos.map((repo) => repo.name);
 }
 
-export async function sync(mainWindow: BrowserWindow): Promise<SyncResult> {
+export async function sync(mainWindow: BrowserWindow) {
   const config = loadConfig();
 
   const { usersAndOrgs, pat, storagePath, ignoredRepos = [] } = config as any;
@@ -145,23 +137,6 @@ export async function sync(mainWindow: BrowserWindow): Promise<SyncResult> {
     }
   }
 
-  const summary = `Downloaded: ${downloaded} Failed to download: ${failedToDownload} Updated: ${updated} Failed to update: ${failedToUpdate} Ignored: ${ignored}
-`;
-
-  console.log(summary);
-  mainWindow.webContents.send("syncComplete", {
-    downloaded,
-    failedToDownload,
-    updated,
-    failedToUpdate,
-    ignored,
-  });
-
-  return {
-    downloaded,
-    failedToDownload,
-    updated,
-    failedToUpdate,
-    ignored,
-  };
+  const summary = `Sync complete. Summary: ${downloaded} downloaded, ${failedToDownload} failed to download, ${updated} updated, ${failedToUpdate} failed to update, ${ignored} ignored.`;
+  mainWindow.webContents.send("syncComplete", { message: summary });
 }

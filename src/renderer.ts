@@ -82,21 +82,12 @@ window.api.onSyncProgress((data: { status: string; repo: string }) => {
 });
 
 // Listen for sync completion
-window.api.onSyncComplete(
-  (data: {
-    downloaded: number;
-    failedToDownload: number;
-    updated: number;
-    failedToUpdate: number;
-    ignored: number;
-  }) => {
-    progressEl.innerText = "";
-    progressEl.classList.add("hidden");
+window.api.onSyncComplete((data) => {
+  progressEl.innerText = "";
+  progressEl.classList.add("hidden");
 
-    const summary = `Sync complete. Summary: ${data.downloaded} downloaded, ${data.failedToDownload} failed to download, ${data.updated} updated, ${data.failedToUpdate} failed to update, ${data.ignored} ignored.`;
-    outputEl.innerText = summary;
-  },
-);
+  outputEl.innerText = data.message;
+});
 
 syncBtn.addEventListener("click", async () => {
   syncBtn.disabled = true;

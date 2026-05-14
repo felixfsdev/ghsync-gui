@@ -18,15 +18,7 @@ const api = {
   ) => {
     ipcRenderer.on("syncProgress", (_: any, data: any) => callback(data));
   },
-  onSyncComplete: (
-    callback: (data: {
-      downloaded: number;
-      failedToDownload: number;
-      updated: number;
-      failedToUpdate: number;
-      ignored: number;
-    }) => void,
-  ) => {
+  onSyncComplete: (callback: (data: { message: string }) => void) => {
     ipcRenderer.on("syncComplete", (_: any, data: any) => callback(data));
   },
 };
