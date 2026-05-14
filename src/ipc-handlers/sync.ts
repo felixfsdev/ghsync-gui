@@ -70,11 +70,11 @@ export async function sync(mainWindow: BrowserWindow) {
     fs.mkdirSync(storagePath, { recursive: true });
   }
 
-  let downloaded = 0;
-  let failedToDownload = 0;
-  let updated = 0;
-  let failedToUpdate = 0;
-  let ignored = 0;
+  const downloaded: string[] = [];
+  const failedToDownload: string[] = [];
+  const updated: string[] = [];
+  const failedToUpdate: string[] = [];
+  const ignored: string[] = [];
 
   for (const userOrOrg of usersAndOrgs) {
     let repos: string[] = [];
@@ -93,7 +93,7 @@ export async function sync(mainWindow: BrowserWindow) {
           status: "ignored",
           repo,
         });
-        ignored++;
+        ignored.push(repo);
         continue;
       }
 
@@ -112,10 +112,10 @@ export async function sync(mainWindow: BrowserWindow) {
 
         try {
           await runGitCommand(["clone", "--mirror", cloneUrl, repoPath]);
-          downloaded++;
+          downloaded.push(repo);
         } catch (error) {
           console.error(`Failed to clone ${repo}`, error);
-          failedToDownload++;
+          failedToDownload.push(repo);
         }
 
         continue;
@@ -129,14 +129,29 @@ export async function sync(mainWindow: BrowserWindow) {
 
       try {
         await runGitCommand(["fetch", "--verbose"], { cwd: repoPath });
-        updated++;
+        updated.push(repo);
       } catch (error) {
         console.error(`Failed to update ${repo}`, error);
-        failedToUpdate++;
+        failedToUpdate.push(repo);
       }
     }
   }
 
-  const summary = `Sync complete. Summary: ${downloaded} downloaded, ${failedToDownload} failed to download, ${updated} updated, ${failedToUpdate} failed to update, ${ignored} ignored.`;
-  mainWindow.webContents.send("syncComplete", { message: summary });
+  const summary = [
+    "Sync complete. Summary:",
+    `${downloaded.length} downloaded,`,
+    `${failedToDownload.length === 0 ? "0" : failedToDownload.join(", ")} failed to download,`,
+    `${updated.length} updated,`,
+    `${failedToUpdate.length === 0 ? "0" : failedToUpdate.join(", ")} failed to update,`,
+    `${ignored.length} ignored.`,
+    failedToDownload.length || failedToUpdate.length
+      ? "Delete the failed repositories in the backup folder to trigger a reclone."
+      : "",
+  ]
+    .filter(Boolean)
+    .join(" ");
+
+  mainWindow.webContents.send("syncComplete", {
+    message: summary,
+  });
 }
