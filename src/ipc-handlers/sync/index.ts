@@ -8,6 +8,10 @@ export async function sync(mainWindow: Electron.BrowserWindow) {
     dialog.showErrorBox("Clone Failed", cloneResponse.message);
   }
 
+  console.log(`Cloned: ${cloneResponse.cloned}`);
+  console.log(`Failed to Clone: ${cloneResponse.failedToClone}`);
+  console.log(`Ignored: ${cloneResponse.ignored}`);
+
   mainWindow.webContents.send(
     "outputChange",
     [
