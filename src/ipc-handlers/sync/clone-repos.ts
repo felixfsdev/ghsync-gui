@@ -69,7 +69,7 @@ export default async function cloneRepos(
   );
 
   return {
-    success: false,
+    success: true,
     message: "Cloned",
     cloned: cloned,
     failedToClone: failedToClone,
