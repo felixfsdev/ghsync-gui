@@ -8,5 +8,12 @@ export async function sync(mainWindow: Electron.BrowserWindow) {
     dialog.showErrorBox("Clone Failed", cloneResponse.message);
   }
 
-  mainWindow.webContents.send("outputChange", "");
+  mainWindow.webContents.send(
+    "outputChange",
+    [
+      `Cloned: ${cloneResponse.cloned.length}`,
+      `Failed to Clone: ${cloneResponse.failedToClone.length ? cloneResponse.failedToClone.join(", ") : "0"}`,
+      `Ignored: ${cloneResponse.ignored.length}`,
+    ].join(". "),
+  );
 }
