@@ -33,7 +33,7 @@ export default async function cloneRepos(
     };
   }
 
-  const getResponse = await getAllRepos(pat, config);
+  const getResponse = await getAllRepos(pat, config.storagePath);
 
   if (!getResponse.success || !getResponse.repos) {
     return {
@@ -79,7 +79,7 @@ export default async function cloneRepos(
 
 async function getAllRepos(
   pat: string,
-  config: any,
+  storagePath: string,
 ): Promise<{
   success: boolean;
   message: string;
@@ -110,7 +110,7 @@ async function getAllRepos(
       name: repo.name,
       full_name: repo.full_name,
       url: repo.clone_url,
-      path: path.join(config.storagePath, ...repo.full_name.split("/")),
+      path: path.join(storagePath, ...repo.full_name.split("/")),
     }));
 
     return {
