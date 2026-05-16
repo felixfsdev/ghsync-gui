@@ -47,7 +47,7 @@ export default async function cloneRepos(
     );
 
     mainWindow.webContents.send(
-      "outputChange",
+      "syncProgress",
       `Cloning ${repoToClone.full_name}...`,
     );
 

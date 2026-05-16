@@ -30,7 +30,7 @@ export default async function updateRepos(
     const repoFullName = repoPath.split(path.sep).slice(-2).join("/");
 
     mainWindow.webContents.send(
-      "outputChange",
+      "syncProgress",
       `Updating ${lfs ? "(incl. LFS) " : ""}${repoFullName}...`,
     );
 

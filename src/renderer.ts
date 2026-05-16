@@ -83,11 +83,13 @@ configForm.addEventListener("submit", async (event) => {
 // Sync
 const syncBtn = document.getElementById("syncBtn") as HTMLButtonElement;
 
-const outputEl = document.getElementById("output") as HTMLParagraphElement;
+const progressEl = document.getElementById(
+  "syncProgress",
+) as HTMLParagraphElement;
 
 // Listen for progress updates
-window.api.onOutputChange((output: any) => {
-  outputEl.innerText = output;
+window.api.onSyncProgress((progressMessage: string) => {
+  progressEl.innerText = progressMessage;
 });
 
 syncBtn.addEventListener("click", async () => {

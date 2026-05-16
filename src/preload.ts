@@ -13,9 +13,9 @@ const api = {
   sync: async () => {
     await ipcRenderer.invoke("sync");
   },
-  onOutputChange: (callback: (output: string) => void) => {
-    ipcRenderer.on("outputChange", (event: any, output: string) =>
-      callback(output),
+  onSyncProgress: (callback: (progressMessage: string) => void) => {
+    ipcRenderer.on("syncProgress", (event: any, progressMessage: string) =>
+      callback(progressMessage),
     );
   },
 };

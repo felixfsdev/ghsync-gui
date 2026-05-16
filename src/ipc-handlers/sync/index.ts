@@ -59,5 +59,5 @@ export async function sync(mainWindow: Electron.BrowserWindow) {
 
   // Pending...
 
-  mainWindow.webContents.send("outputChange", "Finished");
+  mainWindow.webContents.send("syncProgress", "Finished");
 }
