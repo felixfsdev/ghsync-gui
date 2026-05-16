@@ -42,8 +42,9 @@ export async function sync(mainWindow: Electron.BrowserWindow) {
     if (error instanceof Error) {
       dialog.showErrorBox(
         "Failed to fetch repos",
-        error.message +
-          "\n\nCheck your internet connection or PAT and try again.",
+        error.message === "fetch failed"
+          ? "Please check internet connection and try again."
+          : error.message,
       );
     } else {
       dialog.showErrorBox("Failed to fetch repos", "Unknown error");
