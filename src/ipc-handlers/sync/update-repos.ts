@@ -1,82 +1,20 @@
 import { readdir } from "fs/promises";
 import { join, resolve } from "path";
-import Store from "electron-store";
 import { runGitCommand } from "./utils/run-git-command";
 import path from "path";
-const store = new Store() as any;
-
 /**
- *
- * @param mainWindow
- * @returns Status of the operation and the full names (e.g., owner/repo)
- * of updated and failed to update repos.
+ * @returns number of repositories updated,
+ * the full names of the repositories failed to update
  */
 export default async function updateRepos(
   mainWindow: Electron.BrowserWindow,
+  storagePath: string,
   lfs: boolean,
 ): Promise<{
-  success: boolean;
-  updated: string[];
+  updated: number;
   failedToUpdate: string[];
 }> {
-  const repoAbsPaths = await getRepoAbsPaths();
-
-  console.log(repoAbsPaths);
-
-  let updated: string[] = [];
-  let failedToUpdate: string[] = [];
-
-  for (const repoPath of repoAbsPaths) {
-    const repoFullName = repoPath.split(path.sep).slice(-2).join("/");
-
-    mainWindow.webContents.send(
-      "syncProgress",
-      `Updating ${lfs ? "(incl. LFS) " : ""}${repoFullName}...`,
-    );
-
-    try {
-      const fetchResponse = await runGitCommand(["fetch"], repoPath);
-      if (!fetchResponse.success) {
-        failedToUpdate.push(repoFullName);
-      } else {
-        updated.push(repoFullName);
-      }
-    } catch (error) {
-      failedToUpdate.push(repoFullName);
-    }
-
-    if (lfs) {
-      try {
-        const lfsResponse = await runGitCommand(
-          ["lfs", "fetch", "--all"],
-          repoPath,
-        );
-
-        if (!lfsResponse.success) {
-          failedToUpdate.push(repoFullName);
-          updated = updated.filter((repo) => repo !== repoFullName);
-        }
-      } catch (error) {
-        failedToUpdate.push(repoFullName);
-        updated = updated.filter((repo) => repo !== repoFullName);
-      }
-    }
-  }
-
-  return {
-    success: true,
-    updated: updated,
-    failedToUpdate: failedToUpdate,
-  };
-}
-
-async function getRepoAbsPaths(): Promise<string[]> {
-  const storagePath = store.get("config").storagePath;
-
-  if (!storagePath) {
-    return [];
-  }
-
+  // Get the absolute paths to the repositories
   const absoluteBase = resolve(storagePath);
   const parents = await readdir(absoluteBase, { withFileTypes: true });
 
@@ -88,9 +26,39 @@ async function getRepoAbsPaths(): Promise<string[]> {
 
       return children
         .filter((c) => c.isDirectory())
-        .map((child) => join(parentPath, child.name)); // Joins into a full absolute string
+        .map((child) => join(parentPath, child.name));
     });
 
   const results = await Promise.all(tasks);
-  return results.flat();
+  const repoAbsPaths = results.flat();
+
+  // Update repos
+  let updated: number = 0;
+  let failedToUpdate: string[] = [];
+
+  for (const repoAbsPath of repoAbsPaths) {
+    const repoFullName = repoAbsPath.split(path.sep).slice(-2).join("/");
+
+    mainWindow.webContents.send(
+      "syncProgress",
+      `Updating ${lfs ? "and fetching LFS files for " : ""}${repoFullName}...`,
+    );
+
+    try {
+      await runGitCommand(["fetch"], repoAbsPath);
+
+      if (lfs) {
+        await runGitCommand(["lfs", "fetch", "--all"], repoAbsPath);
+      }
+
+      updated++;
+    } catch (error) {
+      failedToUpdate.push(repoFullName);
+    }
+  }
+
+  return {
+    updated: updated,
+    failedToUpdate: failedToUpdate,
+  };
 }

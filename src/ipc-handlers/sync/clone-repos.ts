@@ -53,6 +53,11 @@ export default async function cloneRepos(
         ["clone", authenticatedUrl, repoToClone.path, "--mirror"],
         repoToClone.path,
       );
+      // Set remote url manually to remove the default one which includes PAT
+      await runGitCommand(
+        ["remote", "set-url", "origin", repoToClone.clone_url],
+        repoToClone.path,
+      );
     } catch (error) {
       failedToClone.push(repoToClone);
     } finally {

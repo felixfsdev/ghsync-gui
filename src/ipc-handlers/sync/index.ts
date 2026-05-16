@@ -72,8 +72,11 @@ export async function sync(mainWindow: Electron.BrowserWindow) {
   const { cloned, ignored, failedToClone } = cloneReposResult;
 
   // Update repos and fetch LFS files
-
-  // Pending...
+  const { updated, failedToUpdate } = await updateRepos(
+    mainWindow,
+    storagePath,
+    lfs,
+  );
 
   // Show errorbox in case of errors
   if (failedToClone.length) {
@@ -83,15 +86,25 @@ export async function sync(mainWindow: Electron.BrowserWindow) {
         "Please check your internet connection or PAT and try again.",
     );
   }
+  if (failedToUpdate.length) {
+    dialog.showErrorBox(
+      "Failed to update some repositories",
+      `The following repositories could not be updated:\n\n${failedToUpdate.join(" ")}` +
+        "Please check your internet connection or PAT and try again.",
+    );
+  }
 
   // Send final message to syncProgress
   const finalMessage =
-    `Finished${failedToClone.length ? " with ERRORS" : ""}. Summary: ` +
+    `Finished${failedToClone.length || failedToUpdate.length ? " with ERRORS" : ""}. Summary: ` +
     [
       `${cloned} cloned`,
       `${ignored} ignored`,
       `${failedToClone.length} failed to clone`,
+      `${updated} updated`,
+      `${failedToUpdate.length} failed to update`,
     ].join(", ") +
     ".";
+
   mainWindow.webContents.send("syncProgress", finalMessage);
 }
