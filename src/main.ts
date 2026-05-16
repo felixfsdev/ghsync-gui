@@ -1,4 +1,4 @@
-import { app, BrowserWindow } from "electron";
+import { app, BrowserWindow, shell } from "electron";
 import path from "node:path";
 import started from "electron-squirrel-startup";
 import registerIPCHandlers from "./ipc-handlers";
@@ -21,6 +21,12 @@ const createWindowAndReturn = () => {
   });
 
   mainWindow.removeMenu();
+
+  // Open external links in the browser instead of this app
+  mainWindow.webContents.setWindowOpenHandler(({ url }) => {
+    shell.openExternal(url);
+    return { action: "deny" };
+  });
 
   // and load the index.html of the app.
   if (MAIN_WINDOW_VITE_DEV_SERVER_URL) {
