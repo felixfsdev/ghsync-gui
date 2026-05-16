@@ -6,6 +6,6 @@ Successor of ghsync. Made with Electron.
 
 Configure a PAT, click "sync", and your repositories will be backed up to your computer.
 
-## How to configure PAT
+## PAT configuration
 
 Pending...
