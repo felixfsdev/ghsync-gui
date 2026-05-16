@@ -52,6 +52,10 @@ loadDefaultConfig();
 // Save config
 const configForm = document.getElementById("configForm") as HTMLFormElement;
 
+const saveConfigBtn = document.getElementById(
+  "saveConfigBtn",
+) as HTMLButtonElement;
+
 configForm.addEventListener("submit", async (event) => {
   event.preventDefault();
 
@@ -68,13 +72,16 @@ configForm.addEventListener("submit", async (event) => {
     ignoredRepos: ignoredRepos.split(" "),
     lfs: lfs,
   });
+
+  const saveConfigBtnOriginalText = saveConfigBtn.innerText;
+  saveConfigBtn.innerText = "Saved";
+  setTimeout(() => {
+    saveConfigBtn.innerText = saveConfigBtnOriginalText;
+  }, 2000);
 });
 
 // Sync
 const syncBtn = document.getElementById("syncBtn") as HTMLButtonElement;
-const saveConfigBtn = document.getElementById(
-  "saveConfigBtn",
-) as HTMLButtonElement;
 
 const outputEl = document.getElementById("output") as HTMLParagraphElement;
 

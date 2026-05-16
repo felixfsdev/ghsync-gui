@@ -13,6 +13,7 @@ const store = new Store() as any;
  */
 export default async function updateRepos(
   mainWindow: Electron.BrowserWindow,
+  lfs: boolean,
 ): Promise<{
   success: boolean;
   updated: string[];
@@ -26,20 +27,39 @@ export default async function updateRepos(
   let failedToUpdate: string[] = [];
 
   for (const repoPath of repoAbsPaths) {
+    const repoFullName = repoPath.split(path.sep).slice(-2).join("/");
+
     mainWindow.webContents.send(
       "outputChange",
-      `Updating ${repoPath.split(path.sep).slice(-2).join("/")}`,
+      `Updating ${lfs ? "(incl. LFS) " : ""}${repoFullName}...`,
     );
 
     try {
       const fetchResponse = await runGitCommand(["fetch"], repoPath);
       if (!fetchResponse.success) {
-        failedToUpdate.push(repoPath.split(path.sep).slice(-2).join("/"));
+        failedToUpdate.push(repoFullName);
       } else {
-        updated.push(repoPath.split(path.sep).slice(-2).join("/"));
+        updated.push(repoFullName);
       }
     } catch (error) {
-      failedToUpdate.push(repoPath.split(path.sep).slice(-2).join("/"));
+      failedToUpdate.push(repoFullName);
+    }
+
+    if (lfs) {
+      try {
+        const lfsResponse = await runGitCommand(
+          ["lfs", "fetch", "--all"],
+          repoPath,
+        );
+
+        if (!lfsResponse.success) {
+          failedToUpdate.push(repoFullName);
+          updated = updated.filter((repo) => repo !== repoFullName);
+        }
+      } catch (error) {
+        failedToUpdate.push(repoFullName);
+        updated = updated.filter((repo) => repo !== repoFullName);
+      }
     }
   }
 

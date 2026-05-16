@@ -1,8 +1,13 @@
 import cloneRepos from "./clone-repos";
 import { dialog } from "electron";
 import updateRepos from "./update-repos";
+import Store from "electron-store";
+
+const store = new Store() as any;
 
 export async function sync(mainWindow: Electron.BrowserWindow) {
+  const config = store.get("config");
+
   // Clone repos from GitHub
   const cloneResponse = await cloneRepos(mainWindow);
 
@@ -14,7 +19,7 @@ export async function sync(mainWindow: Electron.BrowserWindow) {
   console.log(`Failed to Clone: ${cloneResponse.failedToClone}`);
   console.log(`Ignored: ${cloneResponse.ignored}`);
 
-  const updateResponse = await updateRepos(mainWindow);
+  const updateResponse = await updateRepos(mainWindow, config.lfs === "on");
 
   mainWindow.webContents.send(
     "outputChange",
