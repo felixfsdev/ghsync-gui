@@ -1,9 +1,16 @@
 import { readdir } from "fs/promises";
 import { join, resolve } from "path";
 import Store from "electron-store";
-
+import { runGitCommand } from "./run-git-command";
+import path from "path";
 const store = new Store() as any;
 
+/**
+ *
+ * @param mainWindow
+ * @returns Status of the operation and the full names (e.g., owner/repo)
+ * of updated and failed to update repos.
+ */
 export default async function updateRepos(
   mainWindow: Electron.BrowserWindow,
 ): Promise<{
@@ -15,10 +22,31 @@ export default async function updateRepos(
 
   console.log(repoAbsPaths);
 
+  let updated: string[] = [];
+  let failedToUpdate: string[] = [];
+
+  for (const repoPath of repoAbsPaths) {
+    mainWindow.webContents.send(
+      "outputChange",
+      `Updating ${repoPath.split(path.sep).slice(-2).join("/")}`,
+    );
+
+    try {
+      const fetchResponse = await runGitCommand(["fetch"], repoPath);
+      if (!fetchResponse.success) {
+        failedToUpdate.push(repoPath.split(path.sep).slice(-2).join("/"));
+      } else {
+        updated.push(repoPath.split(path.sep).slice(-2).join("/"));
+      }
+    } catch (error) {
+      failedToUpdate.push(repoPath.split(path.sep).slice(-2).join("/"));
+    }
+  }
+
   return {
-    success: false,
-    updated: [],
-    failedToUpdate: [],
+    success: true,
+    updated: updated,
+    failedToUpdate: failedToUpdate,
   };
 }
 

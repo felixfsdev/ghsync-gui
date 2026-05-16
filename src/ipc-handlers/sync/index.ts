@@ -14,15 +14,16 @@ export async function sync(mainWindow: Electron.BrowserWindow) {
   console.log(`Failed to Clone: ${cloneResponse.failedToClone}`);
   console.log(`Ignored: ${cloneResponse.ignored}`);
 
+  const updateResponse = await updateRepos(mainWindow);
+
   mainWindow.webContents.send(
     "outputChange",
     [
       `Cloned: ${cloneResponse.cloned.length}`,
       `Failed to Clone: ${cloneResponse.failedToClone.length ? cloneResponse.failedToClone.join(", ") : "0"}`,
       `Ignored: ${cloneResponse.ignored.length}`,
+      `Updated: ${updateResponse.updated.length}`,
+      `Failed to Update: ${updateResponse.failedToUpdate.length ? updateResponse.failedToUpdate.join(", ") : "0"}`,
     ].join(". "),
   );
-
-  // Update repos in disk
-  const updateResponse = updateRepos(mainWindow);
 }
