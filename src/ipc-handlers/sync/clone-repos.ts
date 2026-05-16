@@ -7,7 +7,7 @@ import { Repo } from "./get-all-repos";
  * @param mainWindow
  * @param pat
  * @param allRepos
- * @param ignoredRepos an array of the full names of the repos
+ * @param ignoredRepos are in the format "owner/repo-name"
  * @returns
  */
 export default async function cloneRepos(
