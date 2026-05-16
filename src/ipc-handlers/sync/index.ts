@@ -7,6 +7,10 @@ import Store from "electron-store";
 const store = new Store() as any;
 
 export async function sync(mainWindow: Electron.BrowserWindow) {
+  // Reset progress
+  mainWindow.webContents.send("syncProgress", "");
+
+  // Get configuration from electron-store
   const { storagePath, pat, ignoredRepos, lfs } = store.get("config") as {
     storagePath: string;
     pat: string;
@@ -36,7 +40,11 @@ export async function sync(mainWindow: Electron.BrowserWindow) {
     allRepos = await getAllRepos(pat, storagePath);
   } catch (error) {
     if (error instanceof Error) {
-      dialog.showErrorBox("Failed to fetch repos", error.message);
+      dialog.showErrorBox(
+        "Failed to fetch repos",
+        error.message +
+          "\n\nCheck your internet connection or PAT and try again.",
+      );
     } else {
       dialog.showErrorBox("Failed to fetch repos", "Unknown error");
     }
@@ -44,8 +52,14 @@ export async function sync(mainWindow: Electron.BrowserWindow) {
   }
 
   // Clone repos from GitHub
+  let cloneReposResult;
   try {
-    await cloneRepos(mainWindow, pat, allRepos, ignoredRepos);
+    cloneReposResult = await cloneRepos(
+      mainWindow,
+      pat,
+      allRepos,
+      ignoredRepos,
+    );
   } catch (error) {
     if (error instanceof Error) {
       dialog.showErrorBox("Failed to clone repos", error.message);
@@ -54,10 +68,29 @@ export async function sync(mainWindow: Electron.BrowserWindow) {
     }
     return;
   }
+  const { cloned, ignored, failedToClone } = cloneReposResult;
 
   // Update repos and fetch LFS files
 
   // Pending...
 
-  mainWindow.webContents.send("syncProgress", "Finished");
+  // Show errorbox in case of errors
+  if (failedToClone.length) {
+    dialog.showErrorBox(
+      "Failed to clone some repositories",
+      `The following repositories could not be cloned:\n\n${failedToClone.join(" ")}` +
+        "Please check your internet connection or PAT and try again.",
+    );
+  }
+
+  // Send final message to syncProgress
+  const finalMessage =
+    `Finished${failedToClone.length ? " with ERRORS" : ""}. Summary: ` +
+    [
+      `${cloned} cloned`,
+      `${ignored} ignored`,
+      `${failedToClone.length} failed to clone`,
+    ].join(", ") +
+    ".";
+  mainWindow.webContents.send("syncProgress", finalMessage);
 }
