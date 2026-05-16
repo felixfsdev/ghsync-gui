@@ -23,9 +23,13 @@ export async function getAllRepos(
   );
 
   if (!response.ok) {
-    throw new Error(
-      `Failed to fetch repos: ${response.status} ${response.statusText}`,
-    );
+    if (response.status === 401) {
+      throw new Error(
+        `Invalid Personal Access Token (PAT). Please ensure it is correct, not expired, and have the necessary permissions.`,
+      );
+    } else {
+      throw new Error(`${response.status} ${response.statusText}`);
+    }
   }
 
   const reposJSON = await response.json();
