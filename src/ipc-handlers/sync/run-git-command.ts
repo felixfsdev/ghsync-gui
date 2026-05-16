@@ -4,21 +4,16 @@ import * as fs from "fs";
 export async function runGitCommand(
   args: string[],
   cwd: string,
-): Promise<{ success: boolean; message: string }> {
-  // Ensure the absolute path exists before doing anything else
+): Promise<string> {
   try {
     if (!fs.existsSync(cwd)) {
-      // recursive: true safely handles missing parent folders along the path
       fs.mkdirSync(cwd, { recursive: true });
     }
-  } catch (fsError: any) {
-    return {
-      success: false,
-      message: `Failed to create workspace directory: ${fsError.message}`,
-    };
+  } catch (error: any) {
+    throw new Error(`Failed to create workspace directory: ${error.message}`);
   }
 
-  return new Promise((resolve) => {
+  return new Promise((resolve, reject) => {
     const child = spawn("git", args, { cwd });
 
     let stdoutData = "";
@@ -33,17 +28,18 @@ export async function runGitCommand(
     });
 
     child.on("error", (error) => {
-      resolve({ success: false, message: error.message });
+      reject(error);
     });
 
     child.on("close", (code) => {
       if (code === 0) {
-        resolve({ success: true, message: stdoutData.trim() });
+        resolve(stdoutData.trim());
       } else {
-        resolve({
-          success: false,
-          message: stderrData.trim() || `Exit code ${code}`,
-        });
+        reject(
+          new Error(
+            stderrData.trim() || `Git command failed with exit code ${code}`,
+          ),
+        );
       }
     });
   });

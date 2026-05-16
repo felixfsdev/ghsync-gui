@@ -44,7 +44,7 @@ async function loadDefaultConfig() {
   storagePathInput.value = config.storagePath;
   ignoredReposInput.value = config.ignoredRepos.join(" ");
   patInput.value = config.pat;
-  lfsInput.checked = config.lfs === "on";
+  lfsInput.checked = config.lfs;
 }
 
 loadDefaultConfig();
@@ -70,7 +70,7 @@ configForm.addEventListener("submit", async (event) => {
     storagePath: storagePath,
     pat: pat,
     ignoredRepos: ignoredRepos.split(" "),
-    lfs: lfs,
+    lfs: lfs === "on",
   });
 
   const saveConfigBtnOriginalText = saveConfigBtn.innerText;

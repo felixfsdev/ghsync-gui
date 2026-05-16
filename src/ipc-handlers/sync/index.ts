@@ -1,34 +1,63 @@
 import cloneRepos from "./clone-repos";
 import { dialog } from "electron";
 import updateRepos from "./update-repos";
+import { Repo, getAllRepos } from "./get-all-repos";
 import Store from "electron-store";
 
 const store = new Store() as any;
 
 export async function sync(mainWindow: Electron.BrowserWindow) {
-  const config = store.get("config");
+  const { storagePath, pat, ignoredRepos, lfs } = store.get("config") as {
+    storagePath: string;
+    pat: string;
+    ignoredRepos: string[];
+    lfs: boolean;
+  };
 
-  // Clone repos from GitHub
-  const cloneResponse = await cloneRepos(mainWindow);
-
-  if (!cloneResponse.success) {
-    dialog.showErrorBox("Clone Failed", cloneResponse.message);
+  if (!storagePath) {
+    dialog.showErrorBox(
+      "Configuration Error",
+      "Storage path is not configured.",
+    );
+    return;
   }
 
-  console.log(`Cloned: ${cloneResponse.cloned}`);
-  console.log(`Failed to Clone: ${cloneResponse.failedToClone}`);
-  console.log(`Ignored: ${cloneResponse.ignored}`);
+  if (!pat) {
+    dialog.showErrorBox(
+      "Configuration Error",
+      "Personal Access Token (PAT) is not configured.",
+    );
+    return;
+  }
 
-  const updateResponse = await updateRepos(mainWindow, config.lfs === "on");
+  // Fetch repos from GitHub
+  let allRepos: Repo[];
+  try {
+    allRepos = await getAllRepos(pat, storagePath);
+  } catch (error) {
+    if (error instanceof Error) {
+      dialog.showErrorBox("Failed to fetch repos", error.message);
+    } else {
+      dialog.showErrorBox("Failed to fetch repos", "Unknown error");
+    }
+    return;
+  }
 
-  mainWindow.webContents.send(
-    "outputChange",
-    [
-      `Cloned: ${cloneResponse.cloned.length}`,
-      `Failed to Clone: ${cloneResponse.failedToClone.length ? cloneResponse.failedToClone.join(", ") : "0"}`,
-      `Ignored: ${cloneResponse.ignored.length}`,
-      `Updated: ${updateResponse.updated.length}`,
-      `Failed to Update: ${updateResponse.failedToUpdate.length ? updateResponse.failedToUpdate.join(", ") : "0"}`,
-    ].join(". "),
-  );
+  // Clone repos from GitHub
+  try {
+    await cloneRepos(mainWindow, pat, allRepos, ignoredRepos);
+  } catch (error) {
+    if (error instanceof Error) {
+      dialog.showErrorBox("Failed to clone repos", error.message);
+    } else {
+      dialog.showErrorBox("Failed to clone repos", "Unknown error");
+    }
+    return;
+  }
+
+  // Update repos and fetch LFS files
+
+  // Pending...
+
+  mainWindow.webContents.send("outputChange", "Finished");
 }
