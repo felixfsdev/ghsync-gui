@@ -1,6 +1,6 @@
 import { promises as fs } from "fs";
-import { runGitCommand } from "./run-git-command";
-import { Repo, getAllRepos } from "./get-all-repos";
+import { runGitCommand } from "./utils/run-git-command";
+import { Repo } from "./get-all-repos";
 
 /**
  *

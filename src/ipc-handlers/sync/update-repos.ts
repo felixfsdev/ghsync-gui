@@ -1,7 +1,7 @@
 import { readdir } from "fs/promises";
 import { join, resolve } from "path";
 import Store from "electron-store";
-import { runGitCommand } from "./run-git-command";
+import { runGitCommand } from "./utils/run-git-command";
 import path from "path";
 const store = new Store() as any;
 
