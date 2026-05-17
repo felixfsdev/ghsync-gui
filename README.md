@@ -1,10 +1,12 @@
-# ghsync-gui
+<h1 align="center">ghsync-gui</h1>
 
-Successor of ghsync. Built with Electron.
+<p align="center">Successor of ghsync. Built with Electron.<p>
 
 <p align="center">
   <img src="assets/screenshot.png" width="460">
 </p>
+
+---
 
 ## How to use
 
