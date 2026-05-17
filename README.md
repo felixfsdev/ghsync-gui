@@ -1,6 +1,6 @@
 <h1 align="center">ghsync-gui</h1>
 
-<p align="center">Successor of ghsync. Built with Electron. Backup your GitHub repositories with just a click.<p>
+<p align="center">The successor to ghsync. Built with Electron. Back up GitHub repositories with a single click.<p>
 
 <p align="center">
   <img src="assets/screenshot.png" width="460">
@@ -11,7 +11,7 @@
 ## How to use
 
 1. Paste the path to your backup folder
-2. Paste your PAT (classic, not fine-grained; must have at least _repo_ scope)
+2. Paste your PAT (classic, not fine-grained; must have at least _repo_ scope) [learn more](#pat-configuration)
 3. Click Sync
 
 And your repositories will be backed up to your computer.
