@@ -1,6 +1,12 @@
 import { spawn } from "child_process";
 import * as fs from "fs";
 
+/**
+ *
+ * @param args
+ * @param cwd
+ * @returns stdout
+ */
 export async function runGitCommand(
   args: string[],
   cwd: string,

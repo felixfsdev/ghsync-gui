@@ -3,6 +3,7 @@ import { dialog } from "electron";
 import updateRepos from "./update-repos";
 import { Repo, getAllRepos } from "./get-all-repos";
 import Store from "electron-store";
+import { runGitCommand } from "./utils/run-git-command";
 
 const store = new Store() as any;
 
@@ -18,6 +19,7 @@ export async function sync(mainWindow: Electron.BrowserWindow) {
     lfs: boolean;
   };
 
+  // Validate configuration
   if (!storagePath) {
     dialog.showErrorBox(
       "Configuration Error",
@@ -32,6 +34,48 @@ export async function sync(mainWindow: Electron.BrowserWindow) {
       "Personal Access Token (PAT) is not configured.",
     );
     return;
+  }
+
+  // Check git installation
+  try {
+    console.log(await runGitCommand(["version"], process.cwd()));
+  } catch (error) {
+    dialog.showErrorBox(
+      "Git not installed",
+      "Please ensure git is installed and added to PATH.",
+    );
+    return;
+  }
+
+  // Check git lfs installation
+  try {
+    console.log(await runGitCommand(["lfs", "version"], process.cwd()));
+  } catch (error) {
+    dialog.showErrorBox(
+      "LFS not installed",
+      "Please install LFS and try again.",
+    );
+    return;
+  }
+
+  // Initialize lfs
+  try {
+    await runGitCommand(["lfs", "install"], process.cwd());
+  } catch (error) {
+    if (error instanceof Error) {
+      dialog.showErrorBox(
+        "Failed to initialize LFS",
+        "We tried to run `git lfs install` but failed with the following error message: " +
+          error.message,
+      );
+      return;
+    } else {
+      dialog.showErrorBox(
+        "Failed to initialize LFS",
+        "We tried to run `git lfs install` but failed with an unknown error.",
+      );
+      return;
+    }
   }
 
   // Fetch repos from GitHub
