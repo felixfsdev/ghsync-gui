@@ -35,13 +35,17 @@ export default async function updateRepos(
   // Update repos
   let updated: number = 0;
   let failedToUpdate: string[] = [];
-
-  for (const repoAbsPath of repoAbsPaths) {
-    const repoFullName = repoAbsPath.split(path.sep).slice(-2).join("/");
+  const noOfReposToUpdate = repoAbsPaths.length;
+  for (const [index, repoAbsPath] of repoAbsPaths.entries()) {
+    const repoFullName = repoAbsPath
+      .split(path.sep)
+      .slice(-2)
+      .join("/")
+      .replace(/\.git$/, "");
 
     mainWindow.webContents.send(
       "syncProgress",
-      `Updating ${lfs ? "and fetching LFS files for " : ""}${repoFullName}...`,
+      `Updating ${lfs ? "and fetching LFS files" : ""} ${index + 1}/${noOfReposToUpdate}: ${repoFullName}`,
     );
 
     try {

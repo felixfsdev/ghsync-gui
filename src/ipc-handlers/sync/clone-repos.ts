@@ -37,7 +37,8 @@ export default async function cloneRepos(
   }
 
   // Clone repos
-  for (const repoToClone of reposToClone) {
+  const noOfReposToClone = reposToClone.length;
+  for (const [index, repoToClone] of reposToClone.entries()) {
     const authenticatedUrl = repoToClone.clone_url.replace(
       "https://",
       `https://${pat}@`,
@@ -45,7 +46,7 @@ export default async function cloneRepos(
 
     mainWindow.webContents.send(
       "syncProgress",
-      `Cloning ${repoToClone.full_name}...`,
+      `Cloning ${index + 1}/${noOfReposToClone}: ${repoToClone.full_name}`,
     );
 
     try {
