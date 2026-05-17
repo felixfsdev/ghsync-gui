@@ -51,6 +51,10 @@ After that, paste the token into the PAT field in the app. The token is stored l
 
 The app currently embeds the GitHub Personal Access Token in HTTPS clone URLs. While functional, this increases the risk of accidental token exposure via logs, shell history, or debug output. We are actively working on replacing this with a safer authentication mechanism (e.g., credential storage or token injection without URL embedding).
 
+## Known limitations
+
+Currently, the app attempts to update all the repositories eventhough some might not have been changed. In later versions, we are planning on checking the `last_updated` field to only update the repositories that have been changed. This will significantly reduce the number of API calls and improve performance.
+
 ## Thanks
 
 Thanks for sticking with this project to the end. If you found it useful or interesting, please consider starring the official repository—it genuinely helps increase visibility and support continued development.
