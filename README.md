@@ -2,6 +2,10 @@
 
 Successor of ghsync. Built with Electron.
 
+<p align="center">
+  <img src="assets/screenshot.png" width="460">
+</p>
+
 ## How to use
 
 Configure a PAT, click "sync", and your repositories will be backed up to your computer.
