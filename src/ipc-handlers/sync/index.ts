@@ -121,6 +121,7 @@ export async function sync(mainWindow: Electron.BrowserWindow) {
   const { updated, failedToUpdate } = await updateRepos(
     mainWindow,
     storagePath,
+    pat,
     lfs,
   );
 

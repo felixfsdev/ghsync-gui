@@ -47,6 +47,8 @@ This app requires a GitHub Personal Access Token (PAT) to fetch your repositorie
 
 After that, paste the token into the PAT field in the app. The token is stored locally and is never transmitted elsewhere except the GitHub API.
 
+> Note: You should use a classic GitHub PAT instead of a fine-grained PAT, otherwise `git lfs fetch` would fail. We currently don't know the exact reason for this failure. If you keep LFS turned off, you can _probably_ use a fine-grained PAT.
+
 ## Known issues
 
 The app currently embeds the GitHub Personal Access Token in HTTPS clone URLs. While functional, this increases the risk of accidental token exposure via logs, shell history, or debug output. We are actively working on replacing this with a safer authentication mechanism (e.g., credential storage or token injection without URL embedding).

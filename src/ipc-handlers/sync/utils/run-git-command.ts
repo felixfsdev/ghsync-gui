@@ -5,12 +5,15 @@ import * as fs from "fs";
  *
  * @param args
  * @param cwd
+ * @param pat optional, only required for commands that require authentication
  * @returns stdout
  */
 export async function runGitCommand(
   args: string[],
   cwd: string,
+  pat?: string,
 ): Promise<string> {
+  // Create cwd if it doesn't exist
   try {
     if (!fs.existsSync(cwd)) {
       fs.mkdirSync(cwd, { recursive: true });
@@ -20,7 +23,18 @@ export async function runGitCommand(
   }
 
   return new Promise((resolve, reject) => {
-    const child = spawn("git", args, { cwd });
+    let child;
+    if (pat === undefined) {
+      child = spawn("git", args, { cwd });
+    } else {
+      const basicAuth = Buffer.from(`x-access-token:${pat}`).toString("base64");
+
+      child = spawn(
+        "git",
+        ["-c", `http.extraHeader=Authorization: Basic ${basicAuth}`, ...args],
+        { cwd },
+      );
+    }
 
     let stdoutData = "";
     let stderrData = "";

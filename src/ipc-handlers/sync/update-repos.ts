@@ -9,6 +9,7 @@ import path from "path";
 export default async function updateRepos(
   mainWindow: Electron.BrowserWindow,
   storagePath: string,
+  pat: string,
   lfs: boolean,
 ): Promise<{
   updated: number;
@@ -49,10 +50,10 @@ export default async function updateRepos(
     );
 
     try {
-      await runGitCommand(["fetch"], repoAbsPath);
+      await runGitCommand(["fetch"], repoAbsPath, pat);
 
       if (lfs) {
-        await runGitCommand(["lfs", "fetch", "--all"], repoAbsPath);
+        await runGitCommand(["lfs", "fetch", "--all"], repoAbsPath, pat);
       }
 
       updated++;

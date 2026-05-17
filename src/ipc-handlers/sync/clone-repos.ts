@@ -39,11 +39,6 @@ export default async function cloneRepos(
   // Clone repos
   const noOfReposToClone = reposToClone.length;
   for (const [index, repoToClone] of reposToClone.entries()) {
-    const authenticatedUrl = repoToClone.clone_url.replace(
-      "https://",
-      `https://${pat}@`,
-    );
-
     mainWindow.webContents.send(
       "syncProgress",
       `Cloning ${index + 1}/${noOfReposToClone}: ${repoToClone.full_name}`,
@@ -51,13 +46,9 @@ export default async function cloneRepos(
 
     try {
       await runGitCommand(
-        ["clone", authenticatedUrl, repoToClone.path, "--mirror"],
+        ["clone", repoToClone.clone_url, repoToClone.path, "--mirror"],
         repoToClone.path,
-      );
-      // Set remote url manually to remove the default one which includes PAT
-      await runGitCommand(
-        ["remote", "set-url", "origin", repoToClone.clone_url],
-        repoToClone.path,
+        pat,
       );
     } catch (error) {
       failedToClone.push(repoToClone);
