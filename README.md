@@ -11,14 +11,14 @@
 ## How to use
 
 1. Paste the path to your backup folder
-2. Paste your PAT
+2. Paste your PAT (classic, not fine-grained; must have at least _repo_ scope)
 3. Click Sync
 
 And your repositories will be backed up to your computer.
 
 ## How it works
 
-When you click Sync, your repositories (including personal and organization-owned ones) are retrieved from the GitHub API using your Personal Access Token (PAT).
+When you click Sync, the GitHub repositories you have access to (includes your own repos, repos of your organizations, and others) are retrieved from the GitHub API using your Personal Access Token (PAT).
 
 Each repository is then cloned as a mirror using `git clone --mirror` into the configured directory, but only if it has not already been cloned locally. After that, each repository is updated using `git fetch` (and `git lfs fetch --all` if enabled), keeping the local mirror in sync with GitHub.
 
@@ -34,28 +34,24 @@ This app maintains a complete local mirror of your repositories—including full
 
 This app requires a GitHub Personal Access Token (PAT) to fetch your repositories from the GitHub API. Luckily, it is very easy to get one.
 
-1. Go to [github.com](https://github.com).
-2. Click your profile picture and click Settings.
-3. Scroll down the left sidebar and click Developer Settings (usually at the very end).
-4. Open the _Personal access tokens_ dropdown and click _Fine grained token_.
-5. Click _Generate new token_ and give it a name (e.g., `ghsync-gui-pat`).
-6. Select an expiration date if required.
-7. Scroll down to _Repository access_ and select _All repositories_.
-8. Under the _permissions_ section, click _Add permission_ and select _Contents_. Now, you should see _Contents_ and _Metadata_ appear in the box. **Ensure Contents access is set to _Read-only_**.
-9. Click _Generate token_.
-10. Copy the token (it starts with `github_pat_`). **You can only copy it now**. If you close the page without copying, you will have to generate a new one.
+1. Go to [github.com](https://github.com)
+2. Click your profile picture and click Settings
+3. Scroll down the left sidebar and click Developer Settings (usually at the very end)
+4. Open the _Personal access tokens_ dropdown and click _Tokens (classic)_
+5. Click _Generate new token_ and select _classic_ (**not** fine-grained)
+6. Add a note (e.g., `ghsync-gui-pat`)
+7. Select an expiration date (or use the default)
+8. Select scope _repo_ (this should automatically select everything underneath)
+9. Scroll down and click _Generate token_
+10. Copy the generated token (you won't be able to see it again, it starts with `ghp_`)
 
 After that, paste the token into the PAT field in the app. The token is stored locally and is never transmitted elsewhere except the GitHub API.
 
 > Note: You should use a classic GitHub PAT instead of a fine-grained PAT, otherwise `git lfs fetch` would fail. We currently don't know the exact reason for this failure. If you keep LFS turned off, you can _probably_ use a fine-grained PAT.
 
-## Known issues
-
-The app currently embeds the GitHub Personal Access Token in HTTPS clone URLs. While functional, this increases the risk of accidental token exposure via logs, shell history, or debug output. We are actively working on replacing this with a safer authentication mechanism (e.g., credential storage or token injection without URL embedding).
-
 ## Known limitations
 
-Currently, the app attempts to update all the repositories eventhough some might not have been changed. In later versions, we are planning on checking the `last_updated` field to only update the repositories that have been changed. This will significantly reduce the number of API calls and improve performance.
+Currently, the app attempts to update all the repositories eventhough some might not have been changed. While this isn't problematic, it is innefficient. In later versions, we are planning on checking the `last_updated` field to only update the repositories that have been changed.
 
 ## Thanks
 
