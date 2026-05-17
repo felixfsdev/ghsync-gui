@@ -2,7 +2,7 @@
   "name": "ghsync-gui",
   "productName": "ghsync-gui",
   "version": "1.0.0",
-  "description": "My Electron application description",
+  "description": "Backup your GitHub repos with just a click.",
   "main": ".vite/build/main.js",
   "private": true,
   "scripts": {
@@ -15,8 +15,8 @@
   },
   "keywords": [],
   "author": {
-    "name": "FaseehFS",
-    "email": "faseeh1080@gmail.com"
+    "name": "EffessDev",
+    "url": "https://github.com/effessdev"
   },
   "license": "MIT",
   "devDependencies": {
