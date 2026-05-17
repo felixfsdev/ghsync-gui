@@ -128,18 +128,21 @@ export async function sync(mainWindow: Electron.BrowserWindow) {
   // Show errorbox in case of errors
   if (failedToClone.length) {
     dialog.showErrorBox(
-      "Failed to clone some repositories",
-      `The following repositories could not be cloned:\n\n${failedToClone.join(" ")}` +
-        "\n\nPlease check your internet connection or PAT and try again.",
+      `Failed to clone ${cloned === 0 ? "" : "some "}repositories`,
+      [
+        "The following repositories could not be cloned:",
+        failedToClone.join(" "),
+        "Please check your internet connection or PAT (make sure it is not expired) and try again.",
+      ].join("\n\n"),
     );
   }
   if (failedToUpdate.length) {
     dialog.showErrorBox(
-      "Failed to update some repositories",
+      `Failed to update ${updated === 0 ? "" : "some "}repositories`,
       [
         "The following repositories could not be updated:",
         failedToUpdate.join(" "),
-        "Please check your internet connection or PAT and try again. If the issue persists, consider moving the above repositories outside the backup folder to trigger a reclone (this could fix many issues due to corrupted local repositories).",
+        "Please check your internet connection or PAT (make sure it is not expired) and try again. If the issue persists, consider moving the above repositories outside the backup folder to trigger a reclone (this could fix many issues due to corrupted local repositories).",
       ].join("\n\n"),
     );
   }
