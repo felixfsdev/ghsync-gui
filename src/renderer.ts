@@ -29,6 +29,20 @@
 // @ts-ignore
 import "./index.css";
 
+// Elements
+const configForm = document.getElementById("configForm") as HTMLFormElement;
+
+const saveConfigBtn = document.getElementById(
+  "saveConfigBtn",
+) as HTMLButtonElement;
+
+const syncBtn = document.getElementById("syncBtn") as HTMLButtonElement;
+
+const progressEl = document.getElementById(
+  "syncProgress",
+) as HTMLParagraphElement;
+
+// Load the default configuration on start
 async function loadDefaultConfig() {
   const config = await window.api.loadConfig();
   const storagePathInput = document.getElementById(
@@ -49,45 +63,36 @@ async function loadDefaultConfig() {
 
 loadDefaultConfig();
 
-// Save config
-const configForm = document.getElementById("configForm") as HTMLFormElement;
+// Save configuration when the save button is clicked
+async function saveConfig() {
+  configForm.addEventListener("submit", async (event) => {
+    event.preventDefault();
 
-const saveConfigBtn = document.getElementById(
-  "saveConfigBtn",
-) as HTMLButtonElement;
+    const formData = new FormData(configForm);
 
-configForm.addEventListener("submit", async (event) => {
-  event.preventDefault();
+    const storagePath = formData.get("storagePath") as string;
+    const pat = formData.get("pat") as string;
+    const ignoredRepos = formData.get("ignoredRepos") as string;
+    const lfs = formData.get("lfs") as string;
 
-  const formData = new FormData(configForm);
+    await window.api.saveConfig({
+      storagePath: storagePath,
+      pat: pat,
+      ignoredRepos: ignoredRepos.split(" "),
+      lfs: lfs === "on",
+    });
 
-  const storagePath = formData.get("storagePath") as string;
-  const pat = formData.get("pat") as string;
-  const ignoredRepos = formData.get("ignoredRepos") as string;
-  const lfs = formData.get("lfs") as string;
-
-  await window.api.saveConfig({
-    storagePath: storagePath,
-    pat: pat,
-    ignoredRepos: ignoredRepos.split(" "),
-    lfs: lfs === "on",
+    const saveConfigBtnOriginalText = saveConfigBtn.innerText;
+    saveConfigBtn.innerText = "Saved";
+    setTimeout(() => {
+      saveConfigBtn.innerText = saveConfigBtnOriginalText;
+    }, 2000);
   });
+}
 
-  const saveConfigBtnOriginalText = saveConfigBtn.innerText;
-  saveConfigBtn.innerText = "Saved";
-  setTimeout(() => {
-    saveConfigBtn.innerText = saveConfigBtnOriginalText;
-  }, 2000);
-});
+saveConfig();
 
-// Sync
-const syncBtn = document.getElementById("syncBtn") as HTMLButtonElement;
-
-const progressEl = document.getElementById(
-  "syncProgress",
-) as HTMLParagraphElement;
-
-// Listen for progress updates
+// Listen for progress updates and update the progress element
 window.api.onSyncProgress((progressMessage: string) => {
   progressEl.innerText = progressMessage;
 });
