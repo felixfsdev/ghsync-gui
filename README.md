@@ -1,6 +1,6 @@
 <h1 align="center">ghsync-gui</h1>
 
-<p align="center">Successor of ghsync. Built with Electron.<p>
+<p align="center">Successor of ghsync. Built with Electron. Backup your GitHub repositories with just a click.<p>
 
 <p align="center">
   <img src="assets/screenshot.png" width="460">
