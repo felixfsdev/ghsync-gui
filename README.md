@@ -35,4 +35,4 @@ This app requires a GitHub Personal Access Token (PAT) to fetch your repositorie
 9. Click _Generate token_.
 10. Copy the token (it starts with `github_pat_`). **You can only copy it now**. If you close the page without copying, you will have to generate a new one.
 
-After that, paste the token into the PAT field in the app. The token is stored locally and is never transmitted elsewhere. Click save to persist the configuration. Happy syncing!
+After that, paste the token into the PAT field in the app. The token is stored locally and is never transmitted elsewhere. Don't forge to click Save before clicking Sync. Happy syncing!
