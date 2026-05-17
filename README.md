@@ -47,6 +47,10 @@ This app requires a GitHub Personal Access Token (PAT) to fetch your repositorie
 
 After that, paste the token into the PAT field in the app. The token is stored locally and is never transmitted elsewhere except the GitHub API.
 
+## Known issues
+
+The app currently embeds the GitHub Personal Access Token in HTTPS clone URLs. While functional, this increases the risk of accidental token exposure via logs, shell history, or debug output. We are actively working on replacing this with a safer authentication mechanism (e.g., credential storage or token injection without URL embedding).
+
 ## Thanks
 
 Thanks for sticking with this project to the end. If you found it useful or interesting, please consider starring the official repository—it genuinely helps increase visibility and support continued development.

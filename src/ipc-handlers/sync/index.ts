@@ -23,7 +23,7 @@ export async function sync(mainWindow: Electron.BrowserWindow) {
   if (!storagePath) {
     dialog.showErrorBox(
       "Configuration Error",
-      "Storage path is not configured.",
+      "Path to the backup folder is not configured.",
     );
     return;
   }
@@ -87,7 +87,7 @@ export async function sync(mainWindow: Electron.BrowserWindow) {
       dialog.showErrorBox(
         "Failed to fetch repos",
         error.message === "fetch failed"
-          ? "Please check internet connection and try again."
+          ? "Please check your internet connection and try again."
           : error.message,
       );
     } else {
@@ -127,14 +127,14 @@ export async function sync(mainWindow: Electron.BrowserWindow) {
     dialog.showErrorBox(
       "Failed to clone some repositories",
       `The following repositories could not be cloned:\n\n${failedToClone.join(" ")}` +
-        "Please check your internet connection or PAT and try again.",
+        "\n\nPlease check your internet connection or PAT and try again.",
     );
   }
   if (failedToUpdate.length) {
     dialog.showErrorBox(
       "Failed to update some repositories",
       `The following repositories could not be updated:\n\n${failedToUpdate.join(" ")}` +
-        "Please check your internet connection or PAT and try again.",
+        "\n\nPlease check your internet connection or PAT and try again.",
     );
   }
 
