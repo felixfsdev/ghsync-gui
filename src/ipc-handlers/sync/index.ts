@@ -133,8 +133,11 @@ export async function sync(mainWindow: Electron.BrowserWindow) {
   if (failedToUpdate.length) {
     dialog.showErrorBox(
       "Failed to update some repositories",
-      `The following repositories could not be updated:\n\n${failedToUpdate.join(" ")}` +
-        "\n\nPlease check your internet connection or PAT and try again.",
+      [
+        "The following repositories could not be updated:",
+        failedToUpdate.join(" "),
+        "Please check your internet connection or PAT and try again. If the issue persists, consider moving the above repositories outside the backup folder to trigger a reclone (this could fix many issues due to corrupted local repositories).",
+      ].join("\n\n"),
     );
   }
 
