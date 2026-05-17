@@ -45,7 +45,7 @@ export default async function updateRepos(
 
     mainWindow.webContents.send(
       "syncProgress",
-      `Updating ${lfs ? "and fetching LFS files" : ""} ${index + 1}/${noOfReposToUpdate}: ${repoFullName}`,
+      `Updating ${lfs ? "and fetching LFS files " : ""}${index + 1}/${noOfReposToUpdate}: ${repoFullName}`,
     );
 
     try {
