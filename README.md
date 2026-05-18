@@ -6,33 +6,13 @@
   <img src="assets/screenshot.png" width="460">
 </p>
 
----
-
 ## How to use
 
 1. Paste the path to your backup folder
-2. Paste your PAT (classic, not fine-grained; must have at least _repo_ scope) [learn more](#pat-configuration)
+2. Paste your PAT (classic, not fine-grained; must have at least _repo_ scope) [Learn more](#pat-configuration)
 3. Click Sync
 
-And your repositories will be backed up to your computer.
-
-## How it works
-
-When you click Sync, the GitHub repositories you have access to (includes your own repos, repos of your organizations, and others) are retrieved from the GitHub API using your Personal Access Token (PAT).
-
-Each repository is then cloned as a mirror using `git clone --mirror` into the configured directory, but only if it has not already been cloned locally. After that, each repository is updated using `git fetch` (and `git lfs fetch --all` if enabled), keeping the local mirror in sync with GitHub.
-
-> Note: These clones are bare mirrors intended for backup purposes and do not include a working directory.
-
-## Why this exists
-
-GitHub is a highly reliable code hosting platform, but it is not a backup system with guaranteed restore semantics. Some recovery options exist (for example, for recently deleted repositories), but they are limited and time-dependent. Force pushes can also rewrite branch history, making older states hard to recover through normal interfaces.
-
-This app maintains a complete local mirror of your repositories—including full history, branches, and references—so you retain an independent copy for recovery, migration, or archival.
-
 ## PAT configuration
-
-This app requires a GitHub Personal Access Token (PAT) to fetch your repositories from the GitHub API. Luckily, it is very easy to get one.
 
 1. Go to [github.com](https://github.com)
 2. Click your profile picture and click Settings
@@ -49,9 +29,21 @@ After that, paste the token into the PAT field in the app. The token is stored l
 
 > Note: You should use a classic GitHub PAT instead of a fine-grained PAT, otherwise `git lfs fetch` would fail. We currently don't know the exact reason for this failure. If you keep LFS turned off, you can _probably_ use a fine-grained PAT.
 
-## Known limitations
+## How it works
 
-Currently, the app attempts to update all the repositories eventhough some might not have been changed. While this isn't problematic, it is innefficient. In later versions, we are planning on checking the `last_updated` field to only update the repositories that have been changed.
+When you click Sync, the GitHub repositories you have access to (includes your own repos, repos of your organizations, and others) are retrieved from the GitHub API using your Personal Access Token (PAT).
+
+Each repository is then cloned as a mirror using `git clone --mirror` into the configured directory, but only if it has not already been cloned locally. After that, each repository is updated using `git fetch` (and `git lfs fetch --all` if LFS is enabled), keeping the local mirror in sync with GitHub.
+
+> Note: These clones are bare mirrors intended for backup purposes and do not include a working directory.
+
+## Why this exists
+
+Data loss may occur due to
+
+- **Accidental force pushes:** Rewritten branches can make older states practically undiscoverable.
+- **Accidental repo deletion:** GitHub can only recover repos if they were deleted within 90 days.
+- **Account lockout:** Suspension, credential loss, or SSO misconfiguration can block access across all repositories at once.
 
 ## Thanks
 
