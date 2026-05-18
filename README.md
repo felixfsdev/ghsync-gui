@@ -27,7 +27,8 @@
 
 After that, paste the token into the PAT field in the app. The token is stored locally and is never transmitted elsewhere except the GitHub API.
 
-> Note: You should use a classic GitHub PAT instead of a fine-grained PAT, otherwise `git lfs fetch` would fail. We currently don't know the exact reason for this failure. If you keep LFS turned off, you can _probably_ use a fine-grained PAT.
+> [!IMPORTANT]
+> You should use a classic GitHub PAT instead of a fine-grained PAT, otherwise `git lfs fetch` would fail. We currently don't know the exact reason for this failure. If you keep LFS turned off, you can _probably_ use a fine-grained PAT.
 
 ## How it works
 
@@ -35,7 +36,8 @@ When you click Sync, the GitHub repositories you have access to (includes your o
 
 Each repository is then cloned as a mirror using `git clone --mirror` into the configured directory, but only if it has not already been cloned locally. After that, each repository is updated using `git fetch` (and `git lfs fetch --all` if LFS is enabled), keeping the local mirror in sync with GitHub.
 
-> Note: These clones are bare mirrors intended for backup purposes and do not include a working directory.
+> [!NOTE]
+> These clones are bare mirrors intended for backup purposes and do not include a working directory.
 
 ## Why this exists
 
