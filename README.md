@@ -1,6 +1,6 @@
 <h1 align="center">ghsync-gui</h1>
 
-<p align="center">The successor to ghsync. Built with Electron. Back up GitHub repositories with a single click.<p>
+<p align="center">Back up GitHub repositories with a single click. Supports both light and dark modes.<p>
 
 <p align="center">
   <img src="assets/screenshot.png" width="460">
@@ -44,6 +44,10 @@ Data loss may occur due to
 - **Accidental force pushes:** Rewritten branches can make older states practically undiscoverable.
 - **Accidental repo deletion:** GitHub can only recover repos if they were deleted within 90 days.
 - **Account lockout:** Suspension, credential loss, or SSO misconfiguration can block access across all repositories at once.
+
+## CLI version
+
+There is also a CLI version of this app made with Python. You can download it [here](https://github.com/effessdev/ghsync).
 
 ## Thanks
 
