@@ -47,6 +47,19 @@ Data loss may occur due to
 - **Accidental repo deletion:** GitHub can only recover repos if they were deleted within 90 days.
 - **Account lockout:** Suspension, credential loss, or SSO misconfiguration can block access across all repositories at once.
 
+## Build from Source
+
+If you don't trust the prebuilt binaries, you can build them from source using the following steps:
+
+```bash
+git clone https://github.com/effessdev/ghsync-gui.git
+cd ghsync-gui
+npm install
+npm run make
+```
+
+The installer will be generated in `out/make`. On Windows, it is typically located at `out\make\squirrel.windows\x64\ghsync-gui-x.x.x Setup.exe`.
+
 ## CLI version
 
 There is also a CLI version of this app made with Python. You can download it [here](https://github.com/effessdev/ghsync).
